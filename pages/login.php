@@ -1,23 +1,51 @@
 <?php
-$error = '';
+require 'db_connect.php'; // Kết nối cơ sở dữ liệu
+
 
 if (isset($_POST['login'])) {
     $email = isset($_POST['email']) ? trim($_POST['email']) : '';
     $password = isset($_POST['password']) ? $_POST['password'] : '';
     
-    // In a real application, you would validate against a database
-    // This is just a simple example
-    if ($email === 'user@example.com' && $password === 'password') {
-        // Set session variables
-        $_SESSION['user_id'] = 1;
-        $_SESSION['user_name'] = 'John Doe';
-        $_SESSION['user_email'] = $email;
-        
-        // Redirect to home page
-        header('Location: index.php');
-        exit;
+    if (empty($email) || empty($password)) {
+        $error = 'Email and password are required';
     } else {
-        $error = 'Invalid email or password';
+        try {
+            // Kiểm tra trong bảng admin
+            $stmt = $pdo->prepare("SELECT * FROM admin WHERE Email = ?");
+            $stmt->execute([$email]);
+            $admin = $stmt->fetch(PDO::FETCH_ASSOC);
+            
+            if ($admin && $password === $admin['Password']) {
+                // Đăng nhập với tư cách admin
+                $_SESSION['user_id'] = $admin['AdminID'];
+                $_SESSION['user_name'] = $admin['Fname'] . ' ' . $admin['Lname'];
+                $_SESSION['user_email'] = $admin['Email'];
+                $_SESSION['role'] = 'admin';
+                
+                header('Location: admin/index.php'); // Chuyển hướng đến trang quản trị
+                exit;
+            }
+            
+            // Kiểm tra trong bảng member
+            $stmt = $pdo->prepare("SELECT * FROM member WHERE Email = ?");
+            $stmt->execute([$email]);
+            $member = $stmt->fetch(PDO::FETCH_ASSOC);
+            
+            if ($member && $password === $member['Password']) {
+                // Đăng nhập với tư cách member
+                $_SESSION['user_id'] = $member['MemberID'];
+                $_SESSION['user_name'] = $member['Name'];
+                $_SESSION['user_email'] = $member['Email'];
+                $_SESSION['role'] = 'member';
+                
+                header('Location: index.php'); // Chuyển hướng đến trang chính
+                exit;
+            }
+            
+            $error = 'Invalid email or password';
+        } catch (PDOException $e) {
+            $error = 'Login failed: ' . $e->getMessage();
+        }
     }
 }
 ?>
@@ -47,4 +75,3 @@ if (isset($_POST['login'])) {
         <p>Don't have an account? <a href="index.php?page=register">Register</a></p>
     </div>
 </div>
-

@@ -5,7 +5,6 @@
         <a href="index.php?page=products" class="btn">Shop Now</a>
     </div>
 </div>
-
 <section class="featured-products">
     <div class="section-title">
         <h2>Featured Products</h2>

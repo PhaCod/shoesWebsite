@@ -1,6 +1,6 @@
 <?php
-$error = '';
-$success = '';
+require 'db_connect.php'; // Kết nối cơ sở dữ liệu
+
 
 if (isset($_POST['register'])) {
     $name = isset($_POST['name']) ? trim($_POST['name']) : '';
@@ -8,7 +8,7 @@ if (isset($_POST['register'])) {
     $password = isset($_POST['password']) ? $_POST['password'] : '';
     $confirm_password = isset($_POST['confirm_password']) ? $_POST['confirm_password'] : '';
     
-    // Simple validation
+    // Kiểm tra dữ liệu đầu vào
     if (empty($name) || empty($email) || empty($password)) {
         $error = 'All fields are required';
     } elseif ($password !== $confirm_password) {
@@ -16,12 +16,29 @@ if (isset($_POST['register'])) {
     } elseif (strlen($password) < 6) {
         $error = 'Password must be at least 6 characters long';
     } else {
-        // In a real application, you would save to a database
-        // This is just a simple example
-        $success = 'Registration successful! You can now login.';
-        
-        // Optionally redirect to login page after a delay
-        // header('Refresh: 3; URL=index.php?page=login');
+        try {
+            // Kiểm tra xem email đã tồn tại chưa
+            $stmt = $pdo->prepare("SELECT COUNT(*) FROM member WHERE Email = ?");
+            $stmt->execute([$email]);
+            if ($stmt->fetchColumn() > 0) {
+                $error = 'Email already exists';
+            } else {
+                // Mã hóa mật khẩu
+                $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+                
+                // Thêm người dùng mới vào bảng member
+                $stmt = $pdo->prepare("INSERT INTO member (Username, Password, Name, Email, AdminID) VALUES (?, ?, ?, ?, ?)");
+                $username = explode('@', $email)[0]; // Tạo username từ phần đầu của email
+                $admin_id = 1; // Giả sử AdminID mặc định là 1, bạn có thể thay đổi logic này
+                $stmt->execute([$username, $hashed_password, $name, $email, $admin_id]);
+                
+                $success = 'Registration successful! You can now login.';
+                // Chuyển hướng sau 3 giây
+                header('Refresh: 3; URL=index.php?page=login');
+            }
+        } catch (PDOException $e) {
+            $error = 'Registration failed: ' . $e->getMessage();
+        }
     }
 }
 ?>
@@ -63,4 +80,3 @@ if (isset($_POST['register'])) {
         <p>Already have an account? <a href="index.php?page=login">Login</a></p>
     </div>
 </div>
-

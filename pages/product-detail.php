@@ -9,7 +9,7 @@ $products = [
         'name' => 'Classic Sneakers',
         'price' => 79.99,
         'image' => 'assets/images/product1.jpg',
-        'description' => 'These classic sneakers offer both style and comfort. Perfect for casual everyday wear, they feature  => 'These classic sneakers offer both style and comfort. Perfect for casual everyday wear, they feature a durable rubber sole and breathable upper material. Available in multiple colors to match any outfit.',
+        'description'  => 'These classic sneakers offer both style and comfort. Perfect for casual everyday wear, they feature a durable rubber sole and breathable upper material. Available in multiple colors to match any outfit.',
         'category' => 'men'
     ],
     2 => [
