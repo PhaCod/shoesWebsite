@@ -24,6 +24,9 @@
                 <li><a href="index.php?page=customers" class="<?php echo $page === 'customers' ? 'active' : ''; ?>">
                     <i class="fas fa-users"></i> Customers
                 </a></li>
+                <li><a href="index.php?page=manage_news" class="<?php echo $page === 'manage_news' ? 'active' : ''; ?>">
+                    <i class="fas fa-newspaper"></i> News
+                </a></li>
                 <li><a href="../index.php">
                     <i class="fas fa-home"></i> Back to Site
                 </a></li>
@@ -33,4 +36,3 @@
             </ul>
         </div>
         <div class="admin-content">
-

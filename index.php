@@ -31,6 +31,12 @@ switch ($page) {
     case 'register':
         include 'pages/register.php';
         break;
+    case 'news':
+        include 'pages/news.php';
+        break;
+    case 'news_detail':
+        include 'pages/news_detail.php';
+        break;
     default:
         include 'pages/home.php';
         break;
@@ -39,4 +45,3 @@ switch ($page) {
 // Footer
 include 'includes/footer.php';
 ?>
-

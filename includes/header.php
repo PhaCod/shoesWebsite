@@ -19,6 +19,7 @@
                 <ul>
                     <li><a href="index.php">Home</a></li>
                     <li><a href="index.php?page=products">Products</a></li>
+                    <li><a href="index.php?page=news">News</a></li>
                     <li><a href="index.php?page=cart"><i class="fas fa-shopping-cart"></i> Cart
                         <?php if(isset($_SESSION['cart']) && count($_SESSION['cart']) > 0): ?>
                             <span class="cart-count"><?php echo count($_SESSION['cart']); ?></span>

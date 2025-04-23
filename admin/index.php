@@ -2,8 +2,7 @@
 session_start();
 
 // Check if user is logged in as admin
-// In a real application, you would check against admin credentials in a database
-if (!isset($_SESSION['user_id']) || $_SESSION['user_id'] != 1) {
+if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
     header('Location: ../index.php?page=login');
     exit;
 }
@@ -37,6 +36,9 @@ switch ($page) {
     case 'customers':
         include 'pages/customers.php';
         break;
+    case 'manage_news':
+        include 'pages/manage_news.php';
+        break;
     default:
         include 'pages/dashboard.php';
         break;
@@ -45,4 +47,3 @@ switch ($page) {
 // Include footer
 include 'includes/footer.php';
 ?>
-

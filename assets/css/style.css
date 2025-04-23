@@ -616,3 +616,127 @@ footer {
   font-size: 14px;
 }
 
+/* News Page Styles */
+.news-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 30px;
+  margin-bottom: 30px;
+}
+
+.news-item {
+  background-color: white;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.news-item:hover {
+  transform: translateY(-5px);
+}
+
+.news-item h3 {
+  font-size: 20px;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.news-item p {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 15px;
+}
+
+.news-item a {
+  display: inline-block;
+  color: #ff6b6b;
+  font-weight: bold;
+  transition: color 0.3s ease;
+}
+
+.news-item a:hover {
+  color: #ff5252;
+}
+
+/* News Detail Page Styles */
+.news-content {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin-top: 20px;
+  line-height: 1.8;
+}
+
+.news-content p {
+  margin-bottom: 15px;
+}
+
+/* Manage News Page Styles */
+.alert-error {
+  background-color: #f8d7da;
+  color: #721c24;
+  padding: 15px;
+  border-radius: 4px;
+  margin-bottom: 20px;
+  border: 1px solid #f5c6cb;
+}
+
+.alert-success {
+  background-color: #d4edda;
+  color: #155724;
+  padding: 15px;
+  border-radius: 4px;
+  margin-bottom: 20px;
+  border: 1px solid #c3e6cb;
+}
+
+.form-group textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  resize: vertical;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+table th,
+table td {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+table th {
+  background-color: #f8f9fa;
+  font-weight: bold;
+}
+
+table td a {
+  margin-right: 10px;
+}
+
+.btn-danger {
+  background-color: #dc3545;
+  color: white;
+  padding: 8px 15px;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+}
+
+.btn-danger:hover {
+  background-color: #c82333;
+}
+
+/* Responsive Styles for News
+@media (max-width: 768px) {
+  .news-list {
+    grid-template-columns: 1fr;
+  }
+} */
