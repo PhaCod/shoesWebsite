@@ -42,10 +42,12 @@
                     </a>
                 </li>
                 <li>
-                    <a href="/shoesWebsite/index.php?controller=news&action=manage" 
-                       class="<?php echo $currentController === 'news' ? 'active' : ''; ?>">
+                <li>
+                    <a href="/shoesWebsite/index.php?controller=adminNews&action=manage" 
+                    class="<?php echo $currentController === 'adminNews' ? 'active' : ''; ?>">
                         <i class="fas fa-newspaper"></i> News
                     </a>
+                </li>
                 </li>
                 <li>
                     <a href="/shoesWebsite/index.php?controller=home&action=index">
