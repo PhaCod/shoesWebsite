@@ -22,7 +22,7 @@ $controller = isset($_GET['controller']) ? preg_replace('/[^a-zA-Z0-9]/', '', $_
 $action = isset($_GET['action']) ? preg_replace('/[^a-zA-Z0-9]/', '', $_GET['action']) : 'index';
 
 // Kiểm tra quyền truy cập cho khu vực admin
-$adminControllers = ['adminDashboard', 'adminProduct', 'adminOrder', 'adminCustomer', 'adminNews'];
+$adminControllers = ['adminDashboard', 'adminProduct', 'adminOrder', 'adminCustomer', 'adminNews', 'adminPromotion'];
 if (in_array($controller, $adminControllers) && (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin')) {
     header('Location: /shoesWebsite/index.php?controller=auth&action=login');
     exit;

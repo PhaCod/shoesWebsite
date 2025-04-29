@@ -10,11 +10,13 @@ class NewsModel {
     }
 
     public function getAllNews($search = '', $limit = 10, $offset = 0) {
-        $query = "SELECT * FROM news";
+        $query = "SELECT n.*, p.promotion_type, p.promotion_name 
+                  FROM news n 
+                  LEFT JOIN promotions p ON n.promotion_id = p.promotion_id";
         $params = [];
 
         if (!empty($search)) {
-            $query .= " WHERE Title LIKE ? OR Description LIKE ?";
+            $query .= " WHERE n.Title LIKE ? OR n.Description LIKE ?";
             $params = ["%$search%", "%$search%"];
         }
 
@@ -43,16 +45,18 @@ class NewsModel {
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function addNews($title, $description, $content, $admin_id, $thumbnail = null) {
-        $query = "INSERT INTO news (Title, Description, Content, AdminID, thumbnail) VALUES (?, ?, ?, ?, ?)";
+    public function addNews($title, $description, $content, $admin_id, $news_type, $promotion_id = null, $thumbnail = null) {
+        $query = "INSERT INTO news (Title, Description, Content, AdminID, news_type, promotion_id, thumbnail) 
+                  VALUES (?, ?, ?, ?, ?, ?, ?)";
         $stmt = $this->db->prepare($query);
-        return $stmt->execute([$title, $description, $content, $admin_id, $thumbnail]);
+        return $stmt->execute([$title, $description, $content, $admin_id, $news_type, $promotion_id, $thumbnail]);
     }
 
-    public function updateNews($id, $title, $description, $content, $thumbnail = null) {
-        $query = "UPDATE news SET Title = ?, Description = ?, Content = ?, thumbnail = ? WHERE NewsID = ?";
+    public function updateNews($id, $title, $description, $content, $news_type, $promotion_id = null, $thumbnail = null) {
+        $query = "UPDATE news SET Title = ?, Description = ?, Content = ?, news_type = ?, promotion_id = ?, thumbnail = ? 
+                  WHERE NewsID = ?";
         $stmt = $this->db->prepare($query);
-        return $stmt->execute([$title, $description, $content, $thumbnail, $id]);
+        return $stmt->execute([$title, $description, $content, $news_type, $promotion_id, $thumbnail, $id]);
     }
 
     public function deleteNews($id) {
@@ -61,13 +65,14 @@ class NewsModel {
     }
 
     public function getNewsWithAdmin($search = '', $limit = 10, $offset = 0) {
-        $query = "SELECT news.*, CONCAT(admin.Fname, ' ', admin.Lname) AS AdminName 
-                  FROM news 
-                  JOIN admin ON news.AdminID = admin.AdminID";
+        $query = "SELECT n.*, CONCAT(admin.Fname, ' ', admin.Lname) AS AdminName, p.promotion_name 
+                  FROM news n 
+                  JOIN admin ON n.AdminID = admin.AdminID 
+                  LEFT JOIN promotions p ON n.promotion_id = p.promotion_id";
         $params = [];
 
         if (!empty($search)) {
-            $query .= " WHERE news.Title LIKE ? OR news.Description LIKE ? OR news.Content LIKE ?";
+            $query .= " WHERE n.Title LIKE ? OR n.Description LIKE ? OR n.Content LIKE ?";
             $params = ["%$search%", "%$search%", "%$search%"];
         }
 
@@ -104,7 +109,6 @@ class NewsModel {
         return $stmt->fetchColumn();
     }
 
-    // Thêm phương thức đếm tổng số bài viết cho trang công khai
     public function getPublicNewsCount($search = '') {
         $query = "SELECT COUNT(*) FROM news";
         $params = [];

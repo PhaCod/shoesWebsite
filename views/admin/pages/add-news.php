@@ -10,7 +10,8 @@
     }
 
     .news-form .form-group input,
-    .news-form .form-group textarea {
+    .news-form .form-group textarea,
+    .news-form .form-group select {
         width: 100%;
         padding: 8px;
         border: 1px solid #ddd;
@@ -65,6 +66,26 @@
     <div class="form-group">
         <label for="content">Nội Dung</label>
         <textarea id="content" name="content" rows="10" required></textarea>
+    </div>
+    <div class="form-group">
+        <label for="news_type">Loại Tin Tức</label>
+        <select id="news_type" name="news_type" required>
+            <option value="general">Tin Tức Thông Thường</option>
+            <option value="flash_sale_50">Flash Sale 50%</option>
+            <option value="fixed_price_100k">Rẻ Vô Địch 100k</option>
+            <option value="buy_2_get_1">Mua 2 Tặng 1</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="promotion_id">Chương Trình Khuyến Mãi (nếu có)</label>
+        <select id="promotion_id" name="promotion_id">
+            <option value="">Không có</option>
+            <?php foreach ($promotions as $promotion): ?>
+                <option value="<?php echo $promotion['promotion_id']; ?>">
+                    <?php echo htmlspecialchars($promotion['promotion_name']); ?>
+                </option>
+            <?php endforeach; ?>
+        </select>
     </div>
     <div class="form-group">
         <label for="thumbnail">Ảnh Thumbnail</label>

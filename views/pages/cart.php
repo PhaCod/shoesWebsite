@@ -45,6 +45,7 @@
             </tbody>
         </table>
         
+        
         <div class="cart-actions">
             <div>
                 <button type="submit" name="update_cart" class="btn">Update Cart</button>

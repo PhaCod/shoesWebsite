@@ -1,11 +1,14 @@
 <?php
 require_once 'models/NewsModel.php';
+require_once 'models/PromotionModel.php';
 
 class AdminNewsController {
     private $newsModel;
+    private $promotionModel;
 
     public function __construct() {
         $this->newsModel = new NewsModel();
+        $this->promotionModel = new PromotionModel();
     }
 
     public function manage() {
@@ -34,34 +37,35 @@ class AdminNewsController {
             exit;
         }
 
+        $promotions = $this->promotionModel->getAllPromotions();
+
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $title = trim($_POST['title']);
             $description = trim($_POST['description']);
             $content = trim($_POST['content']);
             $admin_id = $_SESSION['user_id'];
+            $news_type = trim($_POST['news_type']);
+            $promotion_id = !empty($_POST['promotion_id']) ? (int)$_POST['promotion_id'] : null;
             $thumbnail = null;
 
             // Xử lý upload ảnh
             if (isset($_FILES['thumbnail']) && $_FILES['thumbnail']['error'] === UPLOAD_ERR_OK) {
                 $allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
-                $maxFileSize = 5 * 1024 * 1024; // 5MB
+                $maxFileSize = 5 * 1024 * 1024;
 
                 $fileType = $_FILES['thumbnail']['type'];
                 $fileSize = $_FILES['thumbnail']['size'];
                 $fileTmp = $_FILES['thumbnail']['tmp_name'];
 
-                // Kiểm tra loại file và kích thước
                 if (!in_array($fileType, $allowedTypes)) {
                     $error = 'Chỉ cho phép upload file ảnh (JPEG, PNG, GIF).';
                 } elseif ($fileSize > $maxFileSize) {
                     $error = 'Kích thước file không được vượt quá 5MB.';
                 } else {
-                    // Đổi tên file để tránh trùng lặp
                     $fileExt = pathinfo($_FILES['thumbnail']['name'], PATHINFO_EXTENSION);
                     $fileName = 'news_' . time() . '.' . $fileExt;
                     $uploadPath = 'assets/images/news/' . $fileName;
 
-                    // Di chuyển file vào thư mục lưu trữ
                     if (move_uploaded_file($fileTmp, $uploadPath)) {
                         $thumbnail = $uploadPath;
                     } else {
@@ -70,10 +74,10 @@ class AdminNewsController {
                 }
             }
 
-            if (empty($title) || empty($description) || empty($content)) {
+            if (empty($title) || empty($description) || empty($content) || empty($news_type)) {
                 $error = 'Vui lòng điền đầy đủ các trường bắt buộc.';
             } else {
-                if ($this->newsModel->addNews($title, $description, $content, $admin_id, $thumbnail)) {
+                if ($this->newsModel->addNews($title, $description, $content, $admin_id, $news_type, $promotion_id, $thumbnail)) {
                     $success = 'Thêm bài viết thành công!';
                 } else {
                     $error = 'Không thể thêm bài viết. Vui lòng thử lại.';
@@ -105,16 +109,19 @@ class AdminNewsController {
             exit;
         }
 
+        $promotions = $this->promotionModel->getAllPromotions();
+
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $title = trim($_POST['title']);
             $description = trim($_POST['description']);
             $content = trim($_POST['content']);
+            $news_type = trim($_POST['news_type']);
+            $promotion_id = !empty($_POST['promotion_id']) ? (int)$_POST['promotion_id'] : null;
             $thumbnail = $edit_news['thumbnail'];
 
-            // Xử lý upload ảnh mới (nếu có)
             if (isset($_FILES['thumbnail']) && $_FILES['thumbnail']['error'] === UPLOAD_ERR_OK) {
                 $allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
-                $maxFileSize = 5 * 1024 * 1024; // 5MB
+                $maxFileSize = 5 * 1024 * 1024;
 
                 $fileType = $_FILES['thumbnail']['type'];
                 $fileSize = $_FILES['thumbnail']['size'];
@@ -125,17 +132,14 @@ class AdminNewsController {
                 } elseif ($fileSize > $maxFileSize) {
                     $error = 'Kích thước file không được vượt quá 5MB.';
                 } else {
-                    // Đổi tên file
                     $fileExt = pathinfo($_FILES['thumbnail']['name'], PATHINFO_EXTENSION);
                     $fileName = 'news_' . $news_id . '_' . time() . '.' . $fileExt;
                     $uploadPath = 'assets/images/news/' . $fileName;
 
-                    // Xóa ảnh cũ nếu tồn tại
                     if ($thumbnail && file_exists($thumbnail)) {
                         unlink($thumbnail);
                     }
 
-                    // Di chuyển file mới
                     if (move_uploaded_file($fileTmp, $uploadPath)) {
                         $thumbnail = $uploadPath;
                     } else {
@@ -144,12 +148,12 @@ class AdminNewsController {
                 }
             }
 
-            if (empty($title) || empty($description) || empty($content)) {
+            if (empty($title) || empty($description) || empty($content) || empty($news_type)) {
                 $error = 'Vui lòng điền đầy đủ các trường bắt buộc.';
             } else {
-                if ($this->newsModel->updateNews($news_id, $title, $description, $content, $thumbnail)) {
+                if ($this->newsModel->updateNews($news_id, $title, $description, $content, $news_type, $promotion_id, $thumbnail)) {
                     $success = 'Cập nhật bài viết thành công!';
-                    $edit_news = $this->newsModel->getNewsById($news_id); // Cập nhật lại dữ liệu sau khi sửa
+                    $edit_news = $this->newsModel->getNewsById($news_id);
                 } else {
                     $error = 'Không thể cập nhật bài viết. Vui lòng thử lại.';
                 }
@@ -175,7 +179,6 @@ class AdminNewsController {
         $news_id = intval($_GET['id']);
         $news = $this->newsModel->getNewsById($news_id);
 
-        // Xóa ảnh thumbnail nếu tồn tại
         if ($news && $news['thumbnail'] && file_exists($news['thumbnail'])) {
             unlink($news['thumbnail']);
         }

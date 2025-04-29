@@ -70,12 +70,17 @@
     <?php else: ?>
         <?php foreach ($news as $item): ?>
             <div class="news-item">
+                <?php
+                $link = $item['promotion_id'] 
+                    ? "/shoesWebsite/index.php?controller=promotionalProducts&action=index&promotion_id={$item['promotion_id']}" 
+                    : "/shoesWebsite/index.php?controller=news&action=detail&id={$item['NewsID']}";
+                ?>
                 <?php if ($item['thumbnail'] && file_exists($item['thumbnail'])): ?>
-                    <a href="/shoesWebsite/index.php?controller=news&action=detail&id=<?php echo $item['NewsID']; ?>">
-                        <img src="/shoesWebsite/<?php echo htmlspecialchars($item['thumbnail']); ?>" alt="Thumbnail" class="news-thumbnail" title="<?php echo htmlspecialchars($item['Title']); ?>">
+                    <a href="<?php echo $link; ?>">
+                        <img src="/shoesWebsite/<?php echo htmlspecialchars($item['thumbnail']); ?>" alt="Thumbnail" class="news-thumbnail" loading="lazy" title="<?php echo htmlspecialchars($item['Title']); ?>">
                     </a>
                 <?php else: ?>
-                    <a href="/shoesWebsite/index.php?controller=news&action=detail&id=<?php echo $item['NewsID']; ?>">
+                    <a href="<?php echo $link; ?>">
                         <img src="/shoesWebsite/assets/images/placeholder.png" alt="No Thumbnail" class="news-thumbnail" loading="lazy" title="<?php echo htmlspecialchars($item['Title']); ?>">
                     </a>
                 <?php endif; ?>

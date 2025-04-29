@@ -1,3 +1,37 @@
+<style>
+    .admin-actions1{
+        margin-top: 5px;
+    }
+    .admin-table img {
+        max-width: 50px;
+        border-radius: 5px;
+    }
+
+    .pagination {
+        margin-top: 20px;
+        text-align: center;
+    }
+
+    .pagination a {
+        display: inline-block;
+        padding: 8px 16px;
+        margin: 0 4px;
+        border: 1px solid #ddd;
+        text-decoration: none;
+        color: #333;
+    }
+
+    .pagination a.active {
+        background-color: #007bff;
+        color: white;
+        border-color: #007bff;
+    }
+
+    .pagination a:hover:not(.active) {
+        background-color: #f1f1f1;
+    }
+</style>
+
 <div class="admin-header">
     <h1>Quản Lý Tin Tức</h1>
     <a href="/shoesWebsite/index.php?controller=adminDashboard&action=dashboard" class="btn btn-secondary">Quay Lại Dashboard</a>
@@ -14,6 +48,10 @@
     <a href="/shoesWebsite/index.php?controller=adminNews&action=addNews" class="btn btn-primary">Thêm Bài Viết Mới</a>
 </div>
 
+<div class="admin-actions1">
+    <a href="/shoesWebsite/index.php?controller=adminPromotion&action=index" class="btn btn-primary">Chỉnh sửa khuyến mãi</a>
+</div>
+
 <form method="get" class="search-form">
     <input type="hidden" name="controller" value="adminNews">
     <input type="hidden" name="action" value="manage">
@@ -27,6 +65,8 @@
             <th>Thumbnail</th>
             <th>Tiêu Đề</th>
             <th>Mô Tả</th>
+            <th>Loại Tin Tức</th>
+            <th>Khuyến Mãi</th>
             <th>Người Đăng</th>
             <th>Ngày Đăng</th>
             <th>Hành Động</th>
@@ -35,20 +75,32 @@
     <tbody>
         <?php if (empty($news)): ?>
             <tr>
-                <td colspan="6">Không tìm thấy bài viết nào.</td>
+                <td colspan="8">Không tìm thấy bài viết nào.</td>
             </tr>
         <?php else: ?>
             <?php foreach ($news as $item): ?>
                 <tr>
                     <td>
                         <?php if ($item['thumbnail'] && file_exists($item['thumbnail'])): ?>
-                            <img src="/shoesWebsite/<?php echo htmlspecialchars($item['thumbnail']); ?>" alt="Thumbnail" style="max-width: 50px;">
+                            <img src="/shoesWebsite/<?php echo htmlspecialchars($item['thumbnail']); ?>" alt="Thumbnail">
                         <?php else: ?>
                             Không có ảnh
                         <?php endif; ?>
                     </td>
                     <td><?php echo htmlspecialchars($item['Title']); ?></td>
                     <td><?php echo htmlspecialchars($item['Description']); ?></td>
+                    <td>
+                        <?php
+                        $news_types = [
+                            'general' => 'Tin Tức Thông Thường',
+                            'flash_sale_50' => 'Flash Sale 50%',
+                            'fixed_price_100k' => 'Rẻ Vô Địch 100k',
+                            'buy_2_get_1' => 'Mua 2 Tặng 1'
+                        ];
+                        echo $news_types[$item['news_type']] ?? 'Không xác định';
+                        ?>
+                    </td>
+                    <td><?php echo htmlspecialchars($item['promotion_name'] ?? 'Không có'); ?></td>
                     <td><?php echo htmlspecialchars($item['AdminName'] ?? 'Unknown'); ?></td>
                     <td><?php echo date('d/m/Y H:i', strtotime($item['DateCreated'])); ?></td>
                     <td>
@@ -76,29 +128,3 @@
         <?php endif; ?>
     <?php endif; ?>
 </div>
-
-<style>
-.pagination {
-    margin-top: 20px;
-    text-align: center;
-}
-
-.pagination a {
-    display: inline-block;
-    padding: 8px 16px;
-    margin: 0 4px;
-    border: 1px solid #ddd;
-    text-decoration: none;
-    color: #333;
-}
-
-.pagination a.active {
-    background-color: #007bff;
-    color: white;
-    border-color: #007bff;
-}
-
-.pagination a:hover:not(.active) {
-    background-color: #f1f1f1;
-}
-</style>
