@@ -12,22 +12,25 @@ class CartController {
         // Lấy danh sách sản phẩm trong giỏ hàng từ session
         $cart = isset($_SESSION['cart']) ? $_SESSION['cart'] : [];
         $cartItems = [];
-        $totalPrice = 0;
+        $subtotal = 0;
+        $shipping = 10.00; // Chi phí vận chuyển cố định
 
         if (!empty($cart)) {
             // Lấy thông tin chi tiết của các sản phẩm trong giỏ hàng
-            foreach ($cart as $shoesId => $quantity) {
+            foreach ($cart as $shoesId => $item) {
                 $product = $this->productModel->getProductById($shoesId);
                 if ($product) {
                     $cartItems[] = [
                         'product' => $product,
-                        'quantity' => $quantity,
-                        'subtotal' => $product['Price'] * $quantity
+                        'quantity' => $item['quantity'],
+                        'subtotal' => $product['price'] * $item['quantity']
                     ];
-                    $totalPrice += $product['Price'] * $quantity;
+                    $subtotal += $product['price'] * $item['quantity'];
                 }
             }
         }
+
+        $total = $subtotal + $shipping;
 
         require_once 'views/components/header.php';
         require_once 'views/pages/cart.php';
@@ -54,9 +57,15 @@ class CartController {
 
         // Thêm sản phẩm vào giỏ hàng
         if (isset($_SESSION['cart'][$shoesId])) {
-            $_SESSION['cart'][$shoesId]++;
+            $_SESSION['cart'][$shoesId]['quantity']++;
         } else {
-            $_SESSION['cart'][$shoesId] = 1;
+            $_SESSION['cart'][$shoesId] = [
+                'id' => $product['id'],
+                'name' => $product['name'],
+                'price' => $product['price'],
+                'image' => $product['image'],
+                'quantity' => 1
+            ];
         }
 
         header('Location: index.php?controller=cart&action=index');
@@ -90,7 +99,7 @@ class CartController {
                 if ($quantity <= 0) {
                     unset($_SESSION['cart'][$shoesId]);
                 } else {
-                    $_SESSION['cart'][$shoesId] = $quantity;
+                    $_SESSION['cart'][$shoesId]['quantity'] = $quantity;
                 }
             }
 

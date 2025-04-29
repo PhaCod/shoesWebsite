@@ -1,91 +1,13 @@
-<?php
-// In a real application, this would come from a database
-$product_id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 
-// Sample product data
-$products = [
-    1 => [
-        'id' => 1,
-        'name' => 'Classic Sneakers',
-        'price' => 79.99,
-        'image' => 'assets/images/product1.jpg',
-        'description'  => 'These classic sneakers offer both style and comfort. Perfect for casual everyday wear, they feature a durable rubber sole and breathable upper material. Available in multiple colors to match any outfit.',
-        'category' => 'men'
-    ],
-    2 => [
-        'id' => 2,
-        'name' => 'Running Shoes',
-        'price' => 99.99,
-        'image' => 'assets/images/product2.jpg',
-        'description' => 'Designed for performance and comfort, these running shoes feature advanced cushioning technology and breathable mesh. Perfect for both serious runners and casual joggers.',
-        'category' => 'sports'
-    ],
-    3 => [
-        'id' => 3,
-        'name' => 'Casual Loafers',
-        'price' => 69.99,
-        'image' => 'assets/images/product3.jpg',
-        'description' => 'Slip into comfort with these stylish loafers. Made with premium materials and featuring a cushioned insole, they\'re perfect for both work and casual occasions.',
-        'category' => 'men'
-    ],
-    4 => [
-        'id' => 4,
-        'name' => 'Formal Oxfords',
-        'price' => 129.99,
-        'image' => 'assets/images/product4.jpg',
-        'description' => 'These classic oxford shoes are crafted from genuine leather with a polished finish. Perfect for formal events, business meetings, or any occasion that calls for sophisticated footwear.',
-        'category' => 'men'
-    ]
-];
-
-// Check if product exists
-if (!isset($products[$product_id])) {
-    echo '<div class="alert">Product not found!</div>';
-    exit;
-}
-
-$product = $products[$product_id];
-
-// Handle add to cart action
-if (isset($_POST['add_to_cart'])) {
-    $quantity = isset($_POST['quantity']) ? (int)$_POST['quantity'] : 1;
-    
-    if ($quantity < 1) {
-        $quantity = 1;
-    }
-    
-    // Initialize cart if it doesn't exist
-    if (!isset($_SESSION['cart'])) {
-        $_SESSION['cart'] = [];
-    }
-    
-    // Add to cart or update quantity if already in cart
-    if (isset($_SESSION['cart'][$product_id])) {
-        $_SESSION['cart'][$product_id]['quantity'] += $quantity;
-    } else {
-        $_SESSION['cart'][$product_id] = [
-            'id' => $product['id'],
-            'name' => $product['name'],
-            'price' => $product['price'],
-            'image' => $product['image'],
-            'quantity' => $quantity
-        ];
-    }
-    
-    // Redirect to prevent form resubmission
-    header('Location: index.php?page=cart');
-    exit;
-}
-?>
 
 <div class="product-detail">
     <div class="product-detail-img">
-        <img src="/placeholder.svg?height=400&width=400" alt="<?php echo $product['name']; ?>">
+        <img src="/shoesWebsite/<?php echo htmlspecialchars($product['image']); ?>" alt="<?php echo htmlspecialchars($product['name']); ?>" loading="lazy">
     </div>
     <div class="product-detail-info">
-        <h1><?php echo $product['name']; ?></h1>
+        <h1><?php echo htmlspecialchars($product['name']); ?></h1>
         <div class="price">$<?php echo number_format($product['price'], 2); ?></div>
-        <div class="description"><?php echo $product['description']; ?></div>
+        <div class="description"><?php echo htmlspecialchars($product['description']); ?></div>
         
         <form method="post" action="">
             <div class="quantity-selector">
@@ -97,5 +19,29 @@ if (isset($_POST['add_to_cart'])) {
         </form>
     </div>
 </div>
+
+<script>
+    // JavaScript cho nút tăng/giảm số lượng
+    document.querySelector('.quantity-minus').addEventListener('click', function() {
+        let input = document.querySelector('.quantity-input');
+        let value = parseInt(input.value);
+        if (value > 1) {
+            input.value = value - 1;
+        }
+    });
+
+    document.querySelector('.quantity-plus').addEventListener('click', function() {
+        let input = document.querySelector('.quantity-input');
+        let value = parseInt(input.value);
+        input.value = value + 1;
+    });
+
+    // Đảm bảo giá trị không nhỏ hơn 1
+    document.querySelector('.quantity-input').addEventListener('change', function() {
+        if (this.value < 1) {
+            this.value = 1;
+        }
+    });
+</script>
 
 <?php require_once 'views/components/footer.php'; ?>

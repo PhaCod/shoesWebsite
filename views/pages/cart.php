@@ -1,50 +1,16 @@
-<?php
-// Initialize cart if it doesn't exist
-if (!isset($_SESSION['cart'])) {
-    $_SESSION['cart'] = [];
-}
 
-// Handle remove from cart
-if (isset($_GET['remove']) && isset($_SESSION['cart'][$_GET['remove']])) {
-    unset($_SESSION['cart'][$_GET['remove']]);
-    // Redirect to prevent form resubmission
-    header('Location: index.php?page=cart');
-    exit;
-}
-
-// Handle update quantity
-if (isset($_POST['update_cart'])) {
-    foreach ($_POST['quantity'] as $id => $quantity) {
-        if (isset($_SESSION['cart'][$id])) {
-            $_SESSION['cart'][$id]['quantity'] = max(1, (int)$quantity);
-        }
-    }
-    // Redirect to prevent form resubmission
-    header('Location: index.php?page=cart');
-    exit;
-}
-
-// Calculate cart totals
-$subtotal = 0;
-foreach ($_SESSION['cart'] as $item) {
-    $subtotal += $item['price'] * $item['quantity'];
-}
-
-$shipping = 10.00; // Fixed shipping cost for simplicity
-$total = $subtotal + $shipping;
-?>
 
 <div class="section-title">
     <h2>Your Shopping Cart</h2>
 </div>
 
-<?php if (empty($_SESSION['cart'])): ?>
+<?php if (empty($cartItems)): ?>
     <div class="empty-cart">
         <p>Your cart is empty.</p>
-        <a href="index.php?page=products" class="btn">Continue Shopping</a>
+        <a href="/shoesWebsite/index.php?controller=products&action=index" class="btn">Continue Shopping</a>
     </div>
 <?php else: ?>
-    <form method="post" action="">
+    <form method="post" action="/shoesWebsite/index.php?controller=cart&action=update">
         <table class="cart-table">
             <thead>
                 <tr>
@@ -56,23 +22,23 @@ $total = $subtotal + $shipping;
                 </tr>
             </thead>
             <tbody>
-                <?php foreach ($_SESSION['cart'] as $id => $item): ?>
+                <?php foreach ($cartItems as $item): ?>
                     <tr>
                         <td>
                             <div class="cart-product">
-                                <img src="/placeholder.svg?height=80&width=80" alt="<?php echo $item['name']; ?>">
+                                <img src="/shoesWebsite/<?php echo htmlspecialchars($item['product']['image']); ?>" alt="<?php echo htmlspecialchars($item['product']['name']); ?>">
                                 <div>
-                                    <h4><?php echo $item['name']; ?></h4>
+                                    <h4><?php echo htmlspecialchars($item['product']['name']); ?></h4>
                                 </div>
                             </div>
                         </td>
-                        <td>$<?php echo number_format($item['price'], 2); ?></td>
+                        <td>$<?php echo number_format($item['product']['price'], 2); ?></td>
                         <td>
-                            <input type="number" name="quantity[<?php echo $id; ?>]" value="<?php echo $item['quantity']; ?>" min="1" class="cart-quantity">
+                            <input type="number" name="quantity[<?php echo $item['product']['id']; ?>]" value="<?php echo $item['quantity']; ?>" min="1" class="cart-quantity">
                         </td>
-                        <td>$<?php echo number_format($item['price'] * $item['quantity'], 2); ?></td>
+                        <td>$<?php echo number_format($item['subtotal'], 2); ?></td>
                         <td>
-                            <a href="index.php?page=cart&remove=<?php echo $id; ?>" class="btn-remove">Remove</a>
+                            <a href="/shoesWebsite/index.php?controller=cart&action=remove&id=<?php echo $item['product']['id']; ?>" class="btn-remove" onclick="return confirm('Are you sure you want to remove this item?')">Remove</a>
                         </td>
                     </tr>
                 <?php endforeach; ?>
@@ -80,8 +46,10 @@ $total = $subtotal + $shipping;
         </table>
         
         <div class="cart-actions">
-            <button type="submit" name="update_cart" class="btn">Update Cart</button>
-            <a href="index.php?page=products" class="btn btn-secondary">Continue Shopping</a>
+            <div>
+                <button type="submit" name="update_cart" class="btn">Update Cart</button>
+                <a href="/shoesWebsite/index.php?controller=products&action=index" class="btn btn-secondary">Continue Shopping</a>
+            </div>
         </div>
     </form>
     
@@ -99,7 +67,7 @@ $total = $subtotal + $shipping;
             <span>Total</span>
             <span>$<?php echo number_format($total, 2); ?></span>
         </div>
-        <a href="index.php?page=checkout" class="btn">Proceed to Checkout</a>
+        <a href="/shoesWebsite/index.php?controller=checkout&action=index" class="btn">Proceed to Checkout</a>
     </div>
 <?php endif; ?>
 
