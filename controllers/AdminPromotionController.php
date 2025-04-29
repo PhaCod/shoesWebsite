@@ -17,10 +17,79 @@ class AdminPromotionController {
     }
 
     public function index() {
-        // Lấy danh sách tất cả chương trình khuyến mãi
         $promotions = $this->promotionModel->getAllPromotions();
-
         require_once 'views/admin/pages/promotion-list.php';
+    }
+
+    public function create() {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $promotionName = isset($_POST['promotion_name']) ? trim($_POST['promotion_name']) : '';
+            $startDate = isset($_POST['start_date']) ? trim($_POST['start_date']) : '';
+            $endDate = isset($_POST['end_date']) ? trim($_POST['end_date']) : '';
+            $promotionType = isset($_POST['promotion_type']) ? trim($_POST['promotion_type']) : '';
+            
+            $discountPercentage = null;
+            $fixedPrice = null;
+            $buyQuantity = null;
+            $getQuantity = null;
+
+            if ($promotionType === 'discount') {
+                $discountPercentage = isset($_POST['discount_percentage']) ? (float)$_POST['discount_percentage'] : 0;
+                if ($discountPercentage <= 0 || $discountPercentage > 100) {
+                    $_SESSION['error'] = "Discount percentage must be between 0 and 100.";
+                    header('Location: index.php?controller=adminPromotion&action=create');
+                    exit;
+                }
+            } elseif ($promotionType === 'fixed') {
+                $fixedPrice = isset($_POST['fixed_price']) ? (float)$_POST['fixed_price'] : 0;
+                if ($fixedPrice <= 0) {
+                    $_SESSION['error'] = "Fixed price must be greater than 0.";
+                    header('Location: index.php?controller=adminPromotion&action=create');
+                    exit;
+                }
+            } elseif ($promotionType === 'buy_get') {
+                $buyQuantity = isset($_POST['buy_quantity']) ? (int)$_POST['buy_quantity'] : 0;
+                $getQuantity = isset($_POST['get_quantity']) ? (int)$_POST['get_quantity'] : 0;
+                if ($buyQuantity <= 0 || $getQuantity <= 0) {
+                    $_SESSION['error'] = "Buy and get quantities must be greater than 0.";
+                    header('Location: index.php?controller=adminPromotion&action=create');
+                    exit;
+                }
+            }
+
+            if (empty($promotionName) || empty($startDate) || empty($endDate)) {
+                $_SESSION['error'] = "All fields are required.";
+                header('Location: index.php?controller=adminPromotion&action=create');
+                exit;
+            }
+
+            if (strtotime($endDate) <= strtotime($startDate)) {
+                $_SESSION['error'] = "End date must be after start date.";
+                header('Location: index.php?controller=adminPromotion&action=create');
+                exit;
+            }
+
+            try {
+                $this->promotionModel->createPromotion(
+                    $promotionName,
+                    $startDate,
+                    $endDate,
+                    $discountPercentage,
+                    $fixedPrice,
+                    $buyQuantity,
+                    $getQuantity
+                );
+                $_SESSION['message'] = "Promotion created successfully.";
+                header('Location: index.php?controller=adminPromotion&action=index');
+                exit;
+            } catch (Exception $e) {
+                $_SESSION['error'] = "Error creating promotion: " . $e->getMessage();
+                header('Location: index.php?controller=adminPromotion&action=create');
+                exit;
+            }
+        }
+
+        require_once 'views/admin/pages/promotion-create.php';
     }
 
     public function manageProducts() {
@@ -37,25 +106,31 @@ class AdminPromotionController {
             exit;
         }
 
-        // Lấy danh sách tất cả sản phẩm
         $products = $this->productModel->getAllProducts();
-
-        // Lấy danh sách sản phẩm đã gán vào chương trình khuyến mãi
         $assignedProducts = $this->promotionModel->getProductsByPromotionId($promotionId);
 
-        // Xử lý gán/tháo gán sản phẩm
+        $allAssignedProducts = [];
+        $allPromotions = $this->promotionModel->getAllPromotions();
+        foreach ($allPromotions as $promo) {
+            if ($promo['promotion_id'] != $promotionId) {
+                $promoProducts = $this->promotionModel->getProductsByPromotionId($promo['promotion_id']);
+                foreach ($promoProducts as $productId) {
+                    $allAssignedProducts[$productId] = $promo['promotion_name'];
+                }
+            }
+        }
+
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $selectedProducts = isset($_POST['products']) ? $_POST['products'] : [];
 
-            // Xóa tất cả sản phẩm hiện tại của chương trình khuyến mãi
             $this->promotionModel->removeAllProductsFromPromotion($promotionId);
 
-            // Gán lại các sản phẩm được chọn
             foreach ($selectedProducts as $productId) {
                 $this->promotionModel->assignProductToPromotion($promotionId, $productId);
             }
 
-            header('Location: index.php?controller=adminPromotion&action=manageProducts&promotion_id=' . $promotionId);
+            $_SESSION['message'] = "Products updated successfully.";
+            header('Location: index.php?controller=adminPromotion&action=index');
             exit;
         }
 

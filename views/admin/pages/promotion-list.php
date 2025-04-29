@@ -1,12 +1,20 @@
-<?php
-require 'views/admin/components/header.php';
-?>
+<?php require 'views/admin/components/header.php'; ?>
 
 <div class="section-title">
     <h2>Manage Promotions</h2>
 </div>
 
+<?php if (isset($_SESSION['message'])): ?>
+    <div class="alert alert-success">
+        <?php echo htmlspecialchars($_SESSION['message']); ?>
+        <?php unset($_SESSION['message']); ?>
+    </div>
+<?php endif; ?>
+
 <div class="promotion-list">
+    <div class="actions">
+        <a href="index.php?controller=adminPromotion&action=create" class="btn">Create New Promotion</a>
+    </div>
     <table>
         <thead>
             <tr>
@@ -33,6 +41,4 @@ require 'views/admin/components/header.php';
     </table>
 </div>
 
-<?php
-require 'views/admin/components/admin_footer.php';
-?>
+<?php require 'views/admin/components/admin_footer.php'; ?>

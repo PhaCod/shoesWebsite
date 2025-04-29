@@ -1,114 +1,53 @@
 <?php
-require_once 'models/ProductModel.php';
-
 class CartController {
-    private $productModel;
-
-    public function __construct() {
-        $this->productModel = new ProductModel();
-    }
-
     public function index() {
-        // Lấy danh sách sản phẩm trong giỏ hàng từ session
-        $cart = isset($_SESSION['cart']) ? $_SESSION['cart'] : [];
         $cartItems = [];
         $subtotal = 0;
-        $shipping = 10.00; // Chi phí vận chuyển cố định
+        $shipping = 10.00; // Giả định phí vận chuyển là $10, có thể thay đổi
 
-        if (!empty($cart)) {
-            // Lấy thông tin chi tiết của các sản phẩm trong giỏ hàng
-            foreach ($cart as $shoesId => $item) {
-                $product = $this->productModel->getProductById($shoesId);
-                if ($product) {
-                    $cartItems[] = [
-                        'product' => $product,
-                        'quantity' => $item['quantity'],
-                        'subtotal' => $product['price'] * $item['quantity']
-                    ];
-                    $subtotal += $product['price'] * $item['quantity'];
-                }
+        if (!empty($_SESSION['cart'])) {
+            foreach ($_SESSION['cart'] as $id => $item) {
+                // Tính toán subtotal dựa trên final_price
+                $subtotalForItem = $item['price'] * $item['quantity']; // $item['price'] đã là final_price
+                $cartItems[] = [
+                    'product' => [
+                        'id' => $item['id'],
+                        'name' => $item['name'],
+                        'price' => $item['price'], // Giá gốc (có thể hiển thị nếu cần)
+                        'final_price' => $item['price'], // Giá đã giảm (được lưu trong session)
+                        'image' => $item['image']
+                    ],
+                    'quantity' => $item['quantity'],
+                    'subtotal' => $subtotalForItem
+                ];
+                $subtotal += $subtotalForItem;
             }
         }
 
         $total = $subtotal + $shipping;
 
-        require_once 'views/components/header.php';
         require_once 'views/pages/cart.php';
     }
 
-    public function add() {
-        if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
-            header('Location: index.php?controller=cart&action=index');
-            exit;
+    public function update() {
+        if (isset($_POST['update_cart']) && !empty($_POST['quantity'])) {
+            foreach ($_POST['quantity'] as $id => $quantity) {
+                $quantity = (int)$quantity;
+                if ($quantity < 1) {
+                    unset($_SESSION['cart'][$id]);
+                } elseif (isset($_SESSION['cart'][$id])) {
+                    $_SESSION['cart'][$id]['quantity'] = $quantity;
+                }
+            }
         }
-
-        $shoesId = intval($_GET['id']);
-        $product = $this->productModel->getProductById($shoesId);
-
-        if (!$product) {
-            header('Location: index.php?controller=cart&action=index');
-            exit;
-        }
-
-        // Khởi tạo giỏ hàng nếu chưa có
-        if (!isset($_SESSION['cart'])) {
-            $_SESSION['cart'] = [];
-        }
-
-        // Thêm sản phẩm vào giỏ hàng
-        if (isset($_SESSION['cart'][$shoesId])) {
-            $_SESSION['cart'][$shoesId]['quantity']++;
-        } else {
-            $_SESSION['cart'][$shoesId] = [
-                'id' => $product['id'],
-                'name' => $product['name'],
-                'price' => $product['price'],
-                'image' => $product['image'],
-                'quantity' => 1
-            ];
-        }
-
         header('Location: index.php?controller=cart&action=index');
         exit;
     }
 
     public function remove() {
-        if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
-            header('Location: index.php?controller=cart&action=index');
-            exit;
+        if (isset($_GET['id']) && isset($_SESSION['cart'][$_GET['id']])) {
+            unset($_SESSION['cart'][$_GET['id']]);
         }
-
-        $shoesId = intval($_GET['id']);
-        if (isset($_SESSION['cart'][$shoesId])) {
-            unset($_SESSION['cart'][$shoesId]);
-        }
-
-        // Nếu giỏ hàng rỗng, xóa session cart
-        if (empty($_SESSION['cart'])) {
-            unset($_SESSION['cart']);
-        }
-
-        header('Location: index.php?controller=cart&action=index');
-        exit;
-    }
-
-    public function update() {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            foreach ($_POST['quantity'] as $shoesId => $quantity) {
-                $quantity = intval($quantity);
-                if ($quantity <= 0) {
-                    unset($_SESSION['cart'][$shoesId]);
-                } else {
-                    $_SESSION['cart'][$shoesId]['quantity'] = $quantity;
-                }
-            }
-
-            // Nếu giỏ hàng rỗng, xóa session cart
-            if (empty($_SESSION['cart'])) {
-                unset($_SESSION['cart']);
-            }
-        }
-
         header('Location: index.php?controller=cart&action=index');
         exit;
     }

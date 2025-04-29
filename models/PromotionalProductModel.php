@@ -14,7 +14,6 @@ class PromotionalProductModel {
 
     public function getAllProducts() {
         $products = $this->productModel->getAllProducts();
-        // Lấy thông tin khuyến mãi cho từng sản phẩm
         foreach ($products as &$product) {
             $product['promotion'] = $this->getPromotionForProduct($product['id']);
             $product['final_price'] = $this->calculateDiscountedPrice($product, $product['promotion']);
@@ -32,16 +31,18 @@ class PromotionalProductModel {
     }
 
     private function getPromotionForProduct($product_id) {
-        // Ánh xạ ID sản phẩm hardcode với ShoesID trong cơ sở dữ liệu
         $current_date = date('Y-m-d H:i:s');
         $query = "SELECT p.* 
                   FROM promotions p 
                   JOIN promotion_shoes ps ON p.promotion_id = ps.promotion_id 
-                  WHERE ps.shoe_id = ? 
-                  AND p.start_date <= ? 
-                  AND p.end_date >= ?";
+                  WHERE ps.shoe_id = :shoe_id 
+                  AND p.start_date <= :current_date 
+                  AND p.end_date >= :current_date";
+        
         $stmt = $this->db->prepare($query);
-        $stmt->execute([$product_id, $current_date, $current_date]);
+        $stmt->bindValue(':shoe_id', (int)$product_id, PDO::PARAM_INT);
+        $stmt->bindValue(':current_date', $current_date, PDO::PARAM_STR);
+        $stmt->execute();
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
@@ -56,7 +57,6 @@ class PromotionalProductModel {
         return $product['price'];
     }
 
-    // Lấy tất cả chương trình khuyến mãi
     public function getAllPromotions() {
         $query = "SELECT * FROM promotions";
         $stmt = $this->db->prepare($query);
@@ -64,7 +64,6 @@ class PromotionalProductModel {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    // Lấy chương trình khuyến mãi theo ID
     public function getPromotionById($promotionId) {
         $query = "SELECT * FROM promotions WHERE promotion_id = :promotion_id";
         $stmt = $this->db->prepare($query);
@@ -73,7 +72,6 @@ class PromotionalProductModel {
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    // Lấy danh sách sản phẩm đã gán vào chương trình khuyến mãi
     public function getProductsByPromotionId($promotionId) {
         $query = "SELECT shoe_id FROM promotion_shoes WHERE promotion_id = :promotion_id";
         $stmt = $this->db->prepare($query);
@@ -82,7 +80,6 @@ class PromotionalProductModel {
         return array_column($stmt->fetchAll(PDO::FETCH_ASSOC), 'shoe_id');
     }
 
-    // Xóa tất cả sản phẩm khỏi chương trình khuyến mãi
     public function removeAllProductsFromPromotion($promotionId) {
         $query = "DELETE FROM promotion_shoes WHERE promotion_id = :promotion_id";
         $stmt = $this->db->prepare($query);
@@ -90,8 +87,9 @@ class PromotionalProductModel {
         $stmt->execute();
     }
 
-    // Gán sản phẩm vào chương trình khuyến mãi
     public function assignProductToPromotion($promotionId, $productId) {
+        $this->removeProductFromAllPromotions($productId);
+
         $query = "INSERT INTO promotion_shoes (promotion_id, shoe_id) VALUES (:promotion_id, :shoe_id)";
         $stmt = $this->db->prepare($query);
         $stmt->bindValue(':promotion_id', (int)$promotionId, PDO::PARAM_INT);
@@ -99,4 +97,25 @@ class PromotionalProductModel {
         $stmt->execute();
     }
 
+    public function removeProductFromAllPromotions($productId) {
+        $query = "DELETE FROM promotion_shoes WHERE shoe_id = :shoe_id";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindValue(':shoe_id', (int)$productId, PDO::PARAM_INT);
+        $stmt->execute();
+    }
+
+    // Thêm phương thức để tạo chương trình khuyến mãi mới
+    public function createPromotion($name, $startDate, $endDate, $discountPercentage, $fixedPrice, $buyQuantity, $getQuantity) {
+        $query = "INSERT INTO promotions (promotion_name, start_date, end_date, discount_percentage, fixed_price, buy_quantity, get_quantity) 
+                  VALUES (:promotion_name, :start_date, :end_date, :discount_percentage, :fixed_price, :buy_quantity, :get_quantity)";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindValue(':promotion_name', $name, PDO::PARAM_STR);
+        $stmt->bindValue(':start_date', $startDate, PDO::PARAM_STR);
+        $stmt->bindValue(':end_date', $endDate, PDO::PARAM_STR);
+        $stmt->bindValue(':discount_percentage', $discountPercentage, PDO::PARAM_STR);
+        $stmt->bindValue(':fixed_price', $fixedPrice, PDO::PARAM_STR);
+        $stmt->bindValue(':buy_quantity', $buyQuantity, PDO::PARAM_INT);
+        $stmt->bindValue(':get_quantity', $getQuantity, PDO::PARAM_INT);
+        $stmt->execute();
+    }
 }

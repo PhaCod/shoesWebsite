@@ -1,4 +1,4 @@
-
+<?php require_once 'views/components/header.php'; ?>
 
 <div class="section-title">
     <h2>Your Shopping Cart</h2>
@@ -32,7 +32,14 @@
                                 </div>
                             </div>
                         </td>
-                        <td>$<?php echo number_format($item['product']['price'], 2); ?></td>
+                        <td>
+                            <?php if ($item['product']['final_price'] < $item['product']['price']): ?>
+                                <span style="text-decoration: line-through;">$<?php echo number_format($item['product']['price'], 2); ?></span>
+                                <span>$<?php echo number_format($item['product']['final_price'], 2); ?></span>
+                            <?php else: ?>
+                                <span>$<?php echo number_format($item['product']['final_price'], 2); ?></span>
+                            <?php endif; ?>
+                        </td>
                         <td>
                             <input type="number" name="quantity[<?php echo $item['product']['id']; ?>]" value="<?php echo $item['quantity']; ?>" min="1" class="cart-quantity">
                         </td>
@@ -44,7 +51,6 @@
                 <?php endforeach; ?>
             </tbody>
         </table>
-        
         
         <div class="cart-actions">
             <div>
