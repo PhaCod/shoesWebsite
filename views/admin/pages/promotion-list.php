@@ -33,6 +33,7 @@
                     <td><?php echo $promotion['start_date']; ?></td>
                     <td><?php echo $promotion['end_date']; ?></td>
                     <td>
+                        <a href="index.php?controller=adminPromotion&action=edit&promotion_id=<?php echo $promotion['promotion_id']; ?>">Edit</a> |
                         <a href="index.php?controller=adminPromotion&action=manageProducts&promotion_id=<?php echo $promotion['promotion_id']; ?>">Manage Products</a>
                     </td>
                 </tr>
@@ -40,5 +41,6 @@
         </tbody>
     </table>
 </div>
+
 
 <?php require 'views/admin/components/admin_footer.php'; ?>

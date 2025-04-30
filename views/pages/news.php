@@ -48,6 +48,12 @@
     .pagination a:hover:not(.active) {
         background-color: #f1f1f1;
     }
+
+    .countdown {
+        margin-top: 10px;
+        font-weight: bold;
+        color: #d9534f;
+    }
 </style>
 
 <div class="section-title">
@@ -70,19 +76,19 @@
     <?php else: ?>
         <?php foreach ($news as $item): ?>
             <div class="news-item">
-                <?php
-                $link = $item['promotion_id'] 
-                    ? "/shoesWebsite/index.php?controller=promotionalProducts&action=index&promotion_id={$item['promotion_id']}" 
-                    : "/shoesWebsite/index.php?controller=news&action=detail&id={$item['NewsID']}";
-                ?>
                 <?php if ($item['thumbnail'] && file_exists($item['thumbnail'])): ?>
-                    <a href="<?php echo $link; ?>">
+                    <a href="/shoesWebsite/index.php?controller=news&action=trackClick&id=<?php echo $item['NewsID']; ?>">
                         <img src="/shoesWebsite/<?php echo htmlspecialchars($item['thumbnail']); ?>" alt="Thumbnail" class="news-thumbnail" loading="lazy" title="<?php echo htmlspecialchars($item['Title']); ?>">
                     </a>
                 <?php else: ?>
-                    <a href="<?php echo $link; ?>">
+                    <a href="/shoesWebsite/index.php?controller=news&action=trackClick&id=<?php echo $item['NewsID']; ?>">
                         <img src="/shoesWebsite/assets/images/placeholder.png" alt="No Thumbnail" class="news-thumbnail" loading="lazy" title="<?php echo htmlspecialchars($item['Title']); ?>">
                     </a>
+                <?php endif; ?>
+                <?php if (!empty($item['end_date'])): ?>
+                    <div class="countdown" data-end-date="<?php echo $item['end_date']; ?>">
+                        Time remaining: <span class="timer"></span>
+                    </div>
                 <?php endif; ?>
             </div>
         <?php endforeach; ?>
@@ -104,5 +110,36 @@
         <?php endif; ?>
     <?php endif; ?>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const countdownElements = document.querySelectorAll('.countdown');
+
+    countdownElements.forEach(function(element) {
+        const endDate = new Date(element.getAttribute('data-end-date')).getTime();
+        const timerElement = element.querySelector('.timer');
+
+        function updateCountdown() {
+            const now = new Date().getTime();
+            const distance = endDate - now;
+
+            if (distance < 0) {
+                timerElement.innerHTML = "Expired";
+                return;
+            }
+
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            timerElement.innerHTML = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+        }
+
+        updateCountdown();
+        setInterval(updateCountdown, 1000);
+    });
+});
+</script>
 
 <?php require_once 'views/components/footer.php'; ?>

@@ -92,6 +92,92 @@ class AdminPromotionController {
         require_once 'views/admin/pages/promotion-create.php';
     }
 
+    public function edit() {
+        if (!isset($_GET['promotion_id']) || !is_numeric($_GET['promotion_id'])) {
+            header('Location: index.php?controller=adminPromotion&action=index');
+            exit;
+        }
+
+        $promotionId = (int)$_GET['promotion_id'];
+        $promotion = $this->promotionModel->getPromotionById($promotionId);
+
+        if (!$promotion) {
+            $_SESSION['error'] = "Promotion not found.";
+            header('Location: index.php?controller=adminPromotion&action=index');
+            exit;
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $promotionName = isset($_POST['promotion_name']) ? trim($_POST['promotion_name']) : '';
+            $startDate = isset($_POST['start_date']) ? trim($_POST['start_date']) : '';
+            $endDate = isset($_POST['end_date']) ? trim($_POST['end_date']) : '';
+            $promotionType = isset($_POST['promotion_type']) ? trim($_POST['promotion_type']) : '';
+            
+            $discountPercentage = null;
+            $fixedPrice = null;
+            $buyQuantity = null;
+            $getQuantity = null;
+
+            if ($promotionType === 'discount') {
+                $discountPercentage = isset($_POST['discount_percentage']) ? (float)$_POST['discount_percentage'] : 0;
+                if ($discountPercentage <= 0 || $discountPercentage > 100) {
+                    $_SESSION['error'] = "Discount percentage must be between 0 and 100.";
+                    header('Location: index.php?controller=adminPromotion&action=edit&promotion_id=' . $promotionId);
+                    exit;
+                }
+            } elseif ($promotionType === 'fixed') {
+                $fixedPrice = isset($_POST['fixed_price']) ? (float)$_POST['fixed_price'] : 0;
+                if ($fixedPrice <= 0) {
+                    $_SESSION['error'] = "Fixed price must be greater than 0.";
+                    header('Location: index.php?controller=adminPromotion&action=edit&promotion_id=' . $promotionId);
+                    exit;
+                }
+            } elseif ($promotionType === 'buy_get') {
+                $buyQuantity = isset($_POST['buy_quantity']) ? (int)$_POST['buy_quantity'] : 0;
+                $getQuantity = isset($_POST['get_quantity']) ? (int)$_POST['get_quantity'] : 0;
+                if ($buyQuantity <= 0 || $getQuantity <= 0) {
+                    $_SESSION['error'] = "Buy and get quantities must be greater than 0.";
+                    header('Location: index.php?controller=adminPromotion&action=edit&promotion_id=' . $promotionId);
+                    exit;
+                }
+            }
+
+            if (empty($promotionName) || empty($startDate) || empty($endDate)) {
+                $_SESSION['error'] = "All fields are required.";
+                header('Location: index.php?controller=adminPromotion&action=edit&promotion_id=' . $promotionId);
+                exit;
+            }
+
+            if (strtotime($endDate) <= strtotime($startDate)) {
+                $_SESSION['error'] = "End date must be after start date.";
+                header('Location: index.php?controller=adminPromotion&action=edit&promotion_id=' . $promotionId);
+                exit;
+            }
+
+            try {
+                $this->promotionModel->updatePromotion(
+                    $promotionId,
+                    $promotionName,
+                    $startDate,
+                    $endDate,
+                    $discountPercentage,
+                    $fixedPrice,
+                    $buyQuantity,
+                    $getQuantity
+                );
+                $_SESSION['message'] = "Promotion updated successfully.";
+                header('Location: index.php?controller=adminPromotion&action=index');
+                exit;
+            } catch (Exception $e) {
+                $_SESSION['error'] = "Error updating promotion: " . $e->getMessage();
+                header('Location: index.php?controller=adminPromotion&action=edit&promotion_id=' . $promotionId);
+                exit;
+            }
+        }
+
+        require_once 'views/admin/pages/promotion-edit.php';
+    }
+
     public function manageProducts() {
         if (!isset($_GET['promotion_id']) || !is_numeric($_GET['promotion_id'])) {
             header('Location: index.php?controller=adminPromotion&action=index');

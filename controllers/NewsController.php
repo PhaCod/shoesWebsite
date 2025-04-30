@@ -24,7 +24,6 @@ class NewsController {
 
         require_once 'views/components/header.php';
         require_once 'views/pages/news.php';
-        
     }
 
     public function detail() {
@@ -40,34 +39,36 @@ class NewsController {
             header('Location: index.php?controller=news&action=index');
             exit;
         }
+
+        // Ghi lại lượt nhấp
+        $this->newsModel->incrementClickCount($news_id);
+
         require_once 'views/components/header.php';
         require_once 'views/pages/news_detail.php';
     }
 
-    // public function promotion() {
-    //     if (!isset($_GET['promotion_id']) || !is_numeric($_GET['promotion_id'])) {
-    //         header('Location: index.php?controller=news&action=index');
-    //         exit;
-    //     }
+    public function trackClick() {
+        if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
+            header('Location: index.php?controller=news&action=index');
+            exit;
+        }
 
-    //     $promotion_id = intval($_GET['promotion_id']);
-    //     $promotion = $this->promotionModel->getPromotionById($promotion_id);
+        $news_id = intval($_GET['id']);
+        $news = $this->newsModel->getNewsById($news_id);
 
-    //     if (!$promotion) {
-    //         header('Location: index.php?controller=news&action=index');
-    //         exit;
-    //     }
+        if (!$news) {
+            header('Location: index.php?controller=news&action=index');
+            exit;
+        }
 
-    //     $limit = 6;
-    //     $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
-    //     $page = max(1, $page);
-    //     $offset = ($page - 1) * $limit;
+        // Ghi lại lượt nhấp
+        $this->newsModel->incrementClickCount($news_id);
 
-    //     $shoes = $this->promotionModel->getShoesByPromotion($promotion_id, $limit, $offset);
-    //     $totalShoes = $this->promotionModel->getShoesCountByPromotion($promotion_id);
-    //     $totalPages = ceil($totalShoes / $limit);
-
-    //     require_once 'views/components/header.php';
-    //     require_once 'views/pages/promotion_shoes.php';
-    // }
+        // Chuyển hướng
+        $redirectUrl = $news['promotion_id']
+            ? "/shoesWebsite/index.php?controller=promotionalProducts&action=index&promotion_id={$news['promotion_id']}"
+            : "/shoesWebsite/index.php?controller=news&action=detail&id={$news['NewsID']}";
+        header("Location: $redirectUrl");
+        exit;
+    }
 }

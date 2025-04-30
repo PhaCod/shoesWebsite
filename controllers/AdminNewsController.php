@@ -18,16 +18,37 @@ class AdminNewsController {
         }
 
         $search = isset($_GET['search']) ? trim($_GET['search']) : '';
+        $status = isset($_GET['status']) ? trim($_GET['status']) : 'all';
         $limit = 5;
         $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
         $offset = ($page - 1) * $limit;
 
-        $news = $this->newsModel->getNewsWithAdmin($search, $limit, $offset);
-        $totalNews = $this->newsModel->getNewsCount($search);
+        $news = $this->newsModel->getNewsWithAdmin($search, $limit, $offset, $status);
+        $totalNews = $this->newsModel->getNewsCount($search, $status);
         $totalPages = ceil($totalNews / $limit);
 
         require_once 'views/admin/components/header.php';
         require_once 'views/admin/pages/manage-news.php';
+        require_once 'views/admin/components/admin_footer.php';
+    }
+
+    public function stats() {
+        if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
+            header('Location: index.php?controller=auth&action=login');
+            exit;
+        }
+
+        $search = isset($_GET['search']) ? trim($_GET['search']) : '';
+        $limit = 5;
+        $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+        $offset = ($page - 1) * $limit;
+
+        $clickStats = $this->newsModel->getClickStats($search, $limit, $offset);
+        $totalStats = $this->newsModel->getClickStatsCount($search);
+        $totalPages = ceil($totalStats / $limit);
+
+        require_once 'views/admin/components/header.php';
+        require_once 'views/admin/pages/news-stats.php';
         require_once 'views/admin/components/admin_footer.php';
     }
 
