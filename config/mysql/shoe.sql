@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 28, 2025 at 07:26 PM
+-- Generation Time: Apr 30, 2025 at 12:31 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -261,26 +261,58 @@ CREATE TABLE `news` (
   `Content` text DEFAULT NULL,
   `AdminID` int(11) DEFAULT NULL,
   `thumbnail` varchar(255) DEFAULT NULL,
-  `DateCreated` datetime DEFAULT current_timestamp()
+  `DateCreated` datetime DEFAULT current_timestamp(),
+  `news_type` varchar(50) DEFAULT 'normal',
+  `promotion_id` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `news`
 --
 
-INSERT INTO `news` (`NewsID`, `Title`, `Description`, `Content`, `AdminID`, `thumbnail`, `DateCreated`) VALUES
-(1, 'Giảm giá mùa hè', 'Ưu đãi lên đến 50%', 'Chi tiết khuyến mãi mùa hè...', 1, 'assets/images/news/news_1_1745860271.jpg', '2024-01-01 10:00:00'),
-(2, 'Khuyến mãi hè', 'Giảm giá 20% cho tất cả giày thể thao', 'Chi tiết chương trình khuyến mãi...', 1, 'assets/images/news/news_2_1745860283.jpg', '2024-02-01 10:00:00'),
-(3, 'Ra mắt dòng mới', 'Giới thiệu bộ sưu tập thu đông', 'Chi tiết bộ sưu tập thu đông...', 2, 'assets/images/news/news_3_1745860300.jpg', '2024-03-01 10:00:00'),
-(4, 'Flash Sale', 'Giảm giá sốc trong 2 giờ', 'Chi tiết flash sale...', 3, 'assets/images/news/news_4_1745860307.jpg', '2024-04-01 10:00:00'),
-(5, 'Mở cửa hàng mới', 'Khai trương cửa hàng tại Hà Nội', 'Thông tin cửa hàng mới...', 4, 'assets/images/news/news_5_1745860314.jpg', '2024-05-01 10:00:00'),
-(6, 'Giao hàng miễn phí', 'Miễn phí vận chuyển toàn quốc', 'Chi tiết chương trình...', 5, 'assets/images/news/news_6_1745860321.jpg', '2024-06-01 10:00:00'),
-(7, 'Đổi trả linh hoạt', 'Chính sách đổi trả 30 ngày', 'Chi tiết chính sách...', 6, 'assets/images/news/news_7_1745860330.jpg', '2024-07-01 10:00:00'),
-(8, 'Tặng voucher', 'Nhận voucher 100k cho đơn đầu', 'Chi tiết voucher...', 7, 'assets/images/news/news_8_1745860337.jpg', '2024-08-01 10:00:00'),
-(9, 'Bảo hành sản phẩm', 'Chính sách bảo hành 1 năm', 'Thông tin bảo hành...', 8, 'assets/images/news/news_9_1745860353.jpg', '2024-09-01 10:00:00'),
-(10, 'Sự kiện offline', 'Tham gia sự kiện offline tại TP.HCM', 'Chi tiết sự kiện...', 9, 'assets/images/news/news_10_1745860345.jpg', '2024-10-01 10:00:00'),
-(11, 'Tin tuyển dụng', 'Tuyển dụng nhân viên kinh doanh', 'Thông tin tuyển dụng...', 10, 'assets/images/news/news_11_1745860361.jpg', '2024-11-01 10:00:00'),
-(13, 'sadasd', 'dâsd', 'ádasdsa', 1, 'assets/images/news/news_1745851875.png', '2025-04-28 21:51:15');
+INSERT INTO `news` (`NewsID`, `Title`, `Description`, `Content`, `AdminID`, `thumbnail`, `DateCreated`, `news_type`, `promotion_id`) VALUES
+(1, 'Giảm giá mùa hè', 'Ưu đãi lên đến 50%', 'Chi tiết khuyến mãi mùa hè...', 1, 'assets/images/news/news_1_1745860271.jpg', '2024-01-01 10:00:00', 'fixed_price_100k', 5),
+(2, 'Khuyến mãi hè', 'Giảm giá 20% cho tất cả giày thể thao', 'Chi tiết chương trình khuyến mãi...', 1, 'assets/images/news/news_2_1745860283.jpg', '2024-02-01 10:00:00', 'fixed_price_100k', 1),
+(3, 'Ra mắt dòng mới', 'Giới thiệu bộ sưu tập thu đông', 'Chi tiết bộ sưu tập thu đông...', 2, 'assets/images/news/news_3_1745860300.jpg', '2024-03-01 10:00:00', 'flash_sale_50', 1),
+(4, 'Flash Sale', 'Giảm giá sốc trong 2 giờ', 'Chi tiết flash sale...', 3, 'assets/images/news/news_4_1745860307.jpg', '2024-04-01 10:00:00', 'normal', NULL),
+(5, 'Mở cửa hàng mới', 'Khai trương cửa hàng tại Hà Nội', 'Thông tin cửa hàng mới...', 4, 'assets/images/news/news_5_1745860314.jpg', '2024-05-01 10:00:00', 'normal', NULL),
+(6, 'Giao hàng miễn phí', 'Miễn phí vận chuyển toàn quốc', 'Chi tiết chương trình...', 5, 'assets/images/news/news_6_1745860321.jpg', '2024-06-01 10:00:00', 'normal', NULL),
+(7, 'Đổi trả linh hoạt', 'Chính sách đổi trả 30 ngày', 'Chi tiết chính sách...', 6, 'assets/images/news/news_7_1745860330.jpg', '2024-07-01 10:00:00', 'normal', NULL),
+(8, 'Tặng voucher', 'Nhận voucher 100k cho đơn đầu', 'Chi tiết voucher...', 7, 'assets/images/news/news_8_1745860337.jpg', '2024-08-01 10:00:00', 'normal', NULL),
+(9, 'Bảo hành sản phẩm', 'Chính sách bảo hành 1 năm', 'Thông tin bảo hành...', 8, 'assets/images/news/news_9_1745860353.jpg', '2024-09-01 10:00:00', 'normal', NULL),
+(10, 'Sự kiện offline', 'Tham gia sự kiện offline tại TP.HCM', 'Chi tiết sự kiện...', 9, 'assets/images/news/news_10_1745860345.jpg', '2024-10-01 10:00:00', 'normal', NULL),
+(11, 'Tin tuyển dụng', 'Tuyển dụng nhân viên kinh doanh', 'Thông tin tuyển dụng...', 10, 'assets/images/news/news_11_1745860361.jpg', '2024-11-01 10:00:00', 'normal', NULL),
+(13, 'sadasd', 'dâsd', 'ádasdsa', 1, 'assets/images/news/news_1745851875.png', '2025-04-28 21:51:15', 'normal', NULL),
+(18, 'ádaddad', 'adadad', 'adadsd', 1, 'assets/images/news/news_1745936989.jpg', '2025-04-29 21:29:49', 'flash_sale_50', 1),
+(19, 'ádasda', 'sdasd', 'ádasd', 1, 'assets/images/news/news_1746008449.jpg', '2025-04-30 17:20:49', 'flash_sale_50', 1);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `news_clicks`
+--
+
+CREATE TABLE `news_clicks` (
+  `click_id` int(11) NOT NULL,
+  `news_id` int(11) NOT NULL,
+  `click_count` int(11) DEFAULT 0,
+  `last_clicked_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `news_clicks`
+--
+
+INSERT INTO `news_clicks` (`click_id`, `news_id`, `click_count`, `last_clicked_at`) VALUES
+(1, 4, 1, '2025-04-30 09:34:04'),
+(2, 6, 2, '2025-04-30 09:39:24'),
+(3, 5, 1, '2025-04-30 09:34:08'),
+(4, 7, 1, '2025-04-30 09:39:27'),
+(5, 3, 3, '2025-04-30 10:27:37'),
+(6, 1, 2, '2025-04-30 10:27:35'),
+(7, 2, 7, '2025-04-30 10:27:33'),
+(8, 19, 1, '2025-04-30 10:21:39'),
+(9, 18, 2, '2025-04-30 10:27:29');
 
 -- --------------------------------------------------------
 
@@ -356,6 +388,60 @@ INSERT INTO `order_shoes` (`OrderID`, `ShoesID`) VALUES
 (9, 1),
 (9, 9),
 (10, 10);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `promotions`
+--
+
+CREATE TABLE `promotions` (
+  `promotion_id` int(11) NOT NULL,
+  `promotion_type` varchar(50) NOT NULL,
+  `promotion_name` varchar(100) NOT NULL,
+  `discount_percentage` decimal(5,2) DEFAULT NULL,
+  `fixed_price` decimal(10,2) DEFAULT NULL,
+  `buy_quantity` int(11) DEFAULT NULL,
+  `get_quantity` int(11) DEFAULT NULL,
+  `start_date` datetime NOT NULL,
+  `end_date` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `promotions`
+--
+
+INSERT INTO `promotions` (`promotion_id`, `promotion_type`, `promotion_name`, `discount_percentage`, `fixed_price`, `buy_quantity`, `get_quantity`, `start_date`, `end_date`) VALUES
+(1, 'flash_sale_50', 'Flash Sale 50%', 50.00, NULL, NULL, NULL, '2025-04-16 00:00:00', '2025-05-09 23:59:00'),
+(2, 'cheap_100k', 'Rẻ Vô Địch 100k', NULL, 100.00, NULL, NULL, '2025-04-29 00:00:00', '2025-05-01 23:59:59'),
+(3, 'buy_2_get_1', 'Mua 2 Tặng 1', NULL, NULL, 2, 1, '2025-04-29 00:00:00', '2025-05-01 23:59:59'),
+(4, '', 'abc', NULL, 10.00, NULL, NULL, '2025-05-01 00:04:00', '2025-05-01 00:05:00'),
+(5, '', 'đá', NULL, 15.00, NULL, NULL, '2025-04-29 00:08:00', '2025-05-01 00:08:00');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `promotion_shoes`
+--
+
+CREATE TABLE `promotion_shoes` (
+  `promotion_id` int(11) NOT NULL,
+  `shoe_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `promotion_shoes`
+--
+
+INSERT INTO `promotion_shoes` (`promotion_id`, `shoe_id`) VALUES
+(1, 1),
+(1, 2),
+(1, 3),
+(1, 4),
+(1, 5),
+(1, 6),
+(1, 7),
+(1, 8);
 
 -- --------------------------------------------------------
 
@@ -451,7 +537,15 @@ ALTER TABLE `member`
 --
 ALTER TABLE `news`
   ADD PRIMARY KEY (`NewsID`),
-  ADD KEY `AdminID` (`AdminID`);
+  ADD KEY `AdminID` (`AdminID`),
+  ADD KEY `fk_news_promotion` (`promotion_id`);
+
+--
+-- Indexes for table `news_clicks`
+--
+ALTER TABLE `news_clicks`
+  ADD PRIMARY KEY (`click_id`),
+  ADD KEY `news_id` (`news_id`);
 
 --
 -- Indexes for table `order`
@@ -466,6 +560,19 @@ ALTER TABLE `order`
 ALTER TABLE `order_shoes`
   ADD PRIMARY KEY (`OrderID`,`ShoesID`),
   ADD KEY `ShoesID` (`ShoesID`);
+
+--
+-- Indexes for table `promotions`
+--
+ALTER TABLE `promotions`
+  ADD PRIMARY KEY (`promotion_id`);
+
+--
+-- Indexes for table `promotion_shoes`
+--
+ALTER TABLE `promotion_shoes`
+  ADD PRIMARY KEY (`promotion_id`,`shoe_id`),
+  ADD KEY `shoe_id` (`shoe_id`);
 
 --
 -- Indexes for table `shoes`
@@ -518,13 +625,25 @@ ALTER TABLE `member`
 -- AUTO_INCREMENT for table `news`
 --
 ALTER TABLE `news`
-  MODIFY `NewsID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `NewsID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+
+--
+-- AUTO_INCREMENT for table `news_clicks`
+--
+ALTER TABLE `news_clicks`
+  MODIFY `click_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `order`
 --
 ALTER TABLE `order`
   MODIFY `OrderID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+
+--
+-- AUTO_INCREMENT for table `promotions`
+--
+ALTER TABLE `promotions`
+  MODIFY `promotion_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `shoes`
@@ -572,7 +691,14 @@ ALTER TABLE `member`
 -- Constraints for table `news`
 --
 ALTER TABLE `news`
+  ADD CONSTRAINT `fk_news_promotion` FOREIGN KEY (`promotion_id`) REFERENCES `promotions` (`promotion_id`),
   ADD CONSTRAINT `news_ibfk_1` FOREIGN KEY (`AdminID`) REFERENCES `admin` (`AdminID`);
+
+--
+-- Constraints for table `news_clicks`
+--
+ALTER TABLE `news_clicks`
+  ADD CONSTRAINT `news_clicks_ibfk_1` FOREIGN KEY (`news_id`) REFERENCES `news` (`NewsID`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `order`
@@ -586,6 +712,13 @@ ALTER TABLE `order`
 ALTER TABLE `order_shoes`
   ADD CONSTRAINT `order_shoes_ibfk_1` FOREIGN KEY (`OrderID`) REFERENCES `order` (`OrderID`),
   ADD CONSTRAINT `order_shoes_ibfk_2` FOREIGN KEY (`ShoesID`) REFERENCES `shoes` (`ShoesID`);
+
+--
+-- Constraints for table `promotion_shoes`
+--
+ALTER TABLE `promotion_shoes`
+  ADD CONSTRAINT `promotion_shoes_ibfk_1` FOREIGN KEY (`promotion_id`) REFERENCES `promotions` (`promotion_id`),
+  ADD CONSTRAINT `promotion_shoes_ibfk_2` FOREIGN KEY (`shoe_id`) REFERENCES `shoes` (`ShoesID`);
 
 --
 -- Constraints for table `shoes`
