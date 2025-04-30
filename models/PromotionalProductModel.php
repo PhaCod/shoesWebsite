@@ -57,11 +57,20 @@ class PromotionalProductModel {
         return $product['price'];
     }
 
-    public function getAllPromotions() {
-        $query = "SELECT * FROM promotions";
+    public function getAllPromotions($limit = 10, $offset = 0) {
+        $query = "SELECT * FROM promotions ORDER BY start_date DESC LIMIT :limit OFFSET :offset";
         $stmt = $this->db->prepare($query);
+        $stmt->bindValue(':limit', (int)$limit, PDO::PARAM_INT);
+        $stmt->bindValue(':offset', (int)$offset, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getPromotionsCount() {
+        $query = "SELECT COUNT(*) FROM promotions";
+        $stmt = $this->db->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchColumn();
     }
 
     public function getPromotionById($promotionId) {
@@ -118,7 +127,6 @@ class PromotionalProductModel {
         $stmt->execute();
     }
 
-    // Thêm phương thức để cập nhật chương trình khuyến mãi
     public function updatePromotion($promotionId, $name, $startDate, $endDate, $discountPercentage, $fixedPrice, $buyQuantity, $getQuantity) {
         $query = "UPDATE promotions 
                   SET promotion_name = :promotion_name, 
@@ -138,6 +146,26 @@ class PromotionalProductModel {
         $stmt->bindValue(':fixed_price', $fixedPrice, PDO::PARAM_STR);
         $stmt->bindValue(':buy_quantity', $buyQuantity, PDO::PARAM_INT);
         $stmt->bindValue(':get_quantity', $getQuantity, PDO::PARAM_INT);
+        $stmt->execute();
+    }
+
+    public function deletePromotion($promotionId) {
+        // Xóa các liên kết trong bảng news liên quan đến promotion
+        $query = "UPDATE news SET promotion_id = NULL WHERE promotion_id = :promotion_id";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindValue(':promotion_id', (int)$promotionId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        // Xóa các sản phẩm liên quan trong bảng promotion_shoes
+        $query = "DELETE FROM promotion_shoes WHERE promotion_id = :promotion_id";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindValue(':promotion_id', (int)$promotionId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        // Xóa chương trình khuyến mãi
+        $query = "DELETE FROM promotions WHERE promotion_id = :promotion_id";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindValue(':promotion_id', (int)$promotionId, PDO::PARAM_INT);
         $stmt->execute();
     }
 }

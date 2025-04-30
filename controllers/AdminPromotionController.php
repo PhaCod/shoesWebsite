@@ -7,21 +7,34 @@ class AdminPromotionController {
     private $productModel;
 
     public function __construct() {
-        if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
-            header('Location: index.php?controller=auth&action=login');
-            exit;
-        }
-
         $this->promotionModel = new PromotionalProductModel();
         $this->productModel = new ProductModel();
     }
 
     public function index() {
-        $promotions = $this->promotionModel->getAllPromotions();
+        if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
+            header('Location: index.php?controller=auth&action=login');
+            exit;
+        }
+
+        $limit = 5; // Số lượng chương trình khuyến mãi trên mỗi trang
+        $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+        $page = max(1, $page);
+        $offset = ($page - 1) * $limit;
+
+        $promotions = $this->promotionModel->getAllPromotions($limit, $offset);
+        $totalPromotions = $this->promotionModel->getPromotionsCount();
+        $totalPages = ceil($totalPromotions / $limit);
+
         require_once 'views/admin/pages/promotion-list.php';
     }
 
     public function create() {
+        if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
+            header('Location: index.php?controller=auth&action=login');
+            exit;
+        }
+
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $promotionName = isset($_POST['promotion_name']) ? trim($_POST['promotion_name']) : '';
             $startDate = isset($_POST['start_date']) ? trim($_POST['start_date']) : '';
@@ -93,6 +106,11 @@ class AdminPromotionController {
     }
 
     public function edit() {
+        if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
+            header('Location: index.php?controller=auth&action=login');
+            exit;
+        }
+
         if (!isset($_GET['promotion_id']) || !is_numeric($_GET['promotion_id'])) {
             header('Location: index.php?controller=adminPromotion&action=index');
             exit;
@@ -178,7 +196,35 @@ class AdminPromotionController {
         require_once 'views/admin/pages/promotion-edit.php';
     }
 
+    public function delete() {
+        if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
+            header('Location: index.php?controller=auth&action=login');
+            exit;
+        }
+
+        if (!isset($_GET['promotion_id']) || !is_numeric($_GET['promotion_id'])) {
+            header('Location: index.php?controller=adminPromotion&action=index');
+            exit;
+        }
+
+        $promotionId = (int)$_GET['promotion_id'];
+        try {
+            $this->promotionModel->deletePromotion($promotionId);
+            $_SESSION['message'] = "Promotion deleted successfully.";
+        } catch (Exception $e) {
+            $_SESSION['error'] = "Error deleting promotion: " . $e->getMessage();
+        }
+
+        header('Location: index.php?controller=adminPromotion&action=index');
+        exit;
+    }
+
     public function manageProducts() {
+        if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
+            header('Location: index.php?controller=auth&action=login');
+            exit;
+        }
+
         if (!isset($_GET['promotion_id']) || !is_numeric($_GET['promotion_id'])) {
             header('Location: index.php?controller=adminPromotion&action=index');
             exit;
