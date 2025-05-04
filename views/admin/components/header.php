@@ -6,7 +6,17 @@
     <title>Admin Dashboard - ShoeStore</title>
     <link rel="stylesheet" href="/shoesWebsite/assets/css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Mazer CSS
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/zuramai/mazer@docs/demo/assets/compiled/css/app.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/zuramai/mazer@docs/demo/assets/compiled/css/app-dark.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/zuramai/mazer@docs/demo/assets/compiled/css/iconly.css"> -->
+    <!-- DataTables CSS -->
+    <!-- <link rel="stylesheet" href="https://cdn.datatables.net/2.3.0/css/dataTables.dataTables.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.3.0/css/dataTables.dataTables.rtl.css"> -->
+    
+
 </head>
+
 <body>
     <div class="admin-container">
         <div class="admin-sidebar">
@@ -62,3 +72,6 @@
             </ul>
         </div>
         <div class="admin-content">
+        
+        
+</body>

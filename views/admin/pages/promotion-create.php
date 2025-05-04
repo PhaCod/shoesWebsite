@@ -33,7 +33,6 @@
             <select id="promotion_type" name="promotion_type" onchange="togglePromotionFields()">
                 <option value="discount">Discount Percentage</option>
                 <option value="fixed">Fixed Price</option>
-                <option value="buy_get">Buy X Get Y Free</option>
             </select>
         </div>
 
@@ -51,17 +50,6 @@
             </div>
         </div>
 
-        <div id="buy_get_fields" class="promotion-fields" style="display: none;">
-            <div class="form-group">
-                <label for="buy_quantity">Buy Quantity</label>
-                <input type="number" id="buy_quantity" name="buy_quantity" min="1">
-            </div>
-            <div class="form-group">
-                <label for="get_quantity">Get Free Quantity</label>
-                <input type="number" id="get_quantity" name="get_quantity" min="1">
-            </div>
-        </div>
-
         <button type="submit" class="btn">Create Promotion</button>
     </form>
 </div>
@@ -71,7 +59,6 @@ function togglePromotionFields() {
     const promotionType = document.getElementById('promotion_type').value;
     document.getElementById('discount_fields').style.display = promotionType === 'discount' ? 'block' : 'none';
     document.getElementById('fixed_fields').style.display = promotionType === 'fixed' ? 'block' : 'none';
-    document.getElementById('buy_get_fields').style.display = promotionType === 'buy_get' ? 'block' : 'none';
 }
 </script>
 

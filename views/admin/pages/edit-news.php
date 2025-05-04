@@ -78,9 +78,8 @@
         <label for="news_type">Loại Tin Tức</label>
         <select id="news_type" name="news_type" required>
             <option value="general" <?php echo $edit_news['news_type'] === 'general' ? 'selected' : ''; ?>>Tin Tức Thông Thường</option>
-            <option value="flash_sale_50" <?php echo $edit_news['news_type'] === 'flash_sale_50' ? 'selected' : ''; ?>>Flash Sale 50%</option>
-            <option value="fixed_price_100k" <?php echo $edit_news['news_type'] === 'fixed_price_100k' ? 'selected' : ''; ?>>Rẻ Vô Địch 100k</option>
-            <option value="buy_2_get_1" <?php echo $edit_news['news_type'] === 'buy_2_get_1' ? 'selected' : ''; ?>>Mua 2 Tặng 1</option>
+            <option value="flash_sale" <?php echo $edit_news['news_type'] === 'flash_sale' ? 'selected' : ''; ?>>Sale sập sàn</option>
+            <option value="fixed_price" <?php echo $edit_news['news_type'] === 'fixed_price' ? 'selected' : ''; ?>>Rẻ Vô Địch</option>
         </select>
     </div>
     <div class="form-group">
