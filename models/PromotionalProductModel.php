@@ -113,29 +113,27 @@ class PromotionalProductModel {
         $stmt->execute();
     }
 
-    public function createPromotion($name, $startDate, $endDate, $discountPercentage, $fixedPrice, $buyQuantity, $getQuantity) {
-        $query = "INSERT INTO promotions (promotion_name, start_date, end_date, discount_percentage, fixed_price, buy_quantity, get_quantity) 
-                  VALUES (:promotion_name, :start_date, :end_date, :discount_percentage, :fixed_price, :buy_quantity, :get_quantity)";
+    public function createPromotion($name, $startDate, $endDate, $discountPercentage, $fixedPrice, $promotionType) {
+        $query = "INSERT INTO promotions (promotion_name, start_date, end_date, discount_percentage, fixed_price, promotion_type) 
+                  VALUES (:promotion_name, :start_date, :end_date, :discount_percentage, :fixed_price, :promotion_type)";
         $stmt = $this->db->prepare($query);
         $stmt->bindValue(':promotion_name', $name, PDO::PARAM_STR);
         $stmt->bindValue(':start_date', $startDate, PDO::PARAM_STR);
         $stmt->bindValue(':end_date', $endDate, PDO::PARAM_STR);
         $stmt->bindValue(':discount_percentage', $discountPercentage, PDO::PARAM_STR);
         $stmt->bindValue(':fixed_price', $fixedPrice, PDO::PARAM_STR);
-        $stmt->bindValue(':buy_quantity', $buyQuantity, PDO::PARAM_INT);
-        $stmt->bindValue(':get_quantity', $getQuantity, PDO::PARAM_INT);
+        $stmt->bindValue(':promotion_type', $promotionType, PDO::PARAM_STR);
         $stmt->execute();
     }
 
-    public function updatePromotion($promotionId, $name, $startDate, $endDate, $discountPercentage, $fixedPrice, $buyQuantity, $getQuantity) {
+    public function updatePromotion($promotionId, $name, $startDate, $endDate, $discountPercentage, $fixedPrice, $promotionType) {
         $query = "UPDATE promotions 
                   SET promotion_name = :promotion_name, 
                       start_date = :start_date, 
                       end_date = :end_date, 
                       discount_percentage = :discount_percentage, 
                       fixed_price = :fixed_price, 
-                      buy_quantity = :buy_quantity, 
-                      get_quantity = :get_quantity 
+                      promotion_type = :promotion_type 
                   WHERE promotion_id = :promotion_id";
         $stmt = $this->db->prepare($query);
         $stmt->bindValue(':promotion_id', (int)$promotionId, PDO::PARAM_INT);
@@ -144,8 +142,7 @@ class PromotionalProductModel {
         $stmt->bindValue(':end_date', $endDate, PDO::PARAM_STR);
         $stmt->bindValue(':discount_percentage', $discountPercentage, PDO::PARAM_STR);
         $stmt->bindValue(':fixed_price', $fixedPrice, PDO::PARAM_STR);
-        $stmt->bindValue(':buy_quantity', $buyQuantity, PDO::PARAM_INT);
-        $stmt->bindValue(':get_quantity', $getQuantity, PDO::PARAM_INT);
+        $stmt->bindValue(':promotion_type', $promotionType, PDO::PARAM_STR);
         $stmt->execute();
     }
 

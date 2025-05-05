@@ -71,9 +71,8 @@
         <label for="news_type">Loại Tin Tức</label>
         <select id="news_type" name="news_type" required>
             <option value="general">Tin Tức Thông Thường</option>
-            <option value="flash_sale_50">Flash Sale 50%</option>
-            <option value="fixed_price_100k">Rẻ Vô Địch 100k</option>
-            <option value="buy_2_get_1">Mua 2 Tặng 1</option>
+            <option value="flash_sale">Sale sập sàn</option>
+            <option value="fixed_price">Rẻ Vô Địch</option>
         </select>
     </div>
     <div class="form-group">

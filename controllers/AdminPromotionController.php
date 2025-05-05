@@ -43,8 +43,13 @@ class AdminPromotionController {
             
             $discountPercentage = null;
             $fixedPrice = null;
-            $buyQuantity = null;
-            $getQuantity = null;
+
+            // Kiểm tra promotion_type hợp lệ
+            if (!in_array($promotionType, ['discount', 'fixed'])) {
+                $_SESSION['error'] = "Invalid promotion type.";
+                header('Location: index.php?controller=adminPromotion&action=create');
+                exit;
+            }
 
             if ($promotionType === 'discount') {
                 $discountPercentage = isset($_POST['discount_percentage']) ? (float)$_POST['discount_percentage'] : 0;
@@ -60,17 +65,9 @@ class AdminPromotionController {
                     header('Location: index.php?controller=adminPromotion&action=create');
                     exit;
                 }
-            } elseif ($promotionType === 'buy_get') {
-                $buyQuantity = isset($_POST['buy_quantity']) ? (int)$_POST['buy_quantity'] : 0;
-                $getQuantity = isset($_POST['get_quantity']) ? (int)$_POST['get_quantity'] : 0;
-                if ($buyQuantity <= 0 || $getQuantity <= 0) {
-                    $_SESSION['error'] = "Buy and get quantities must be greater than 0.";
-                    header('Location: index.php?controller=adminPromotion&action=create');
-                    exit;
-                }
             }
 
-            if (empty($promotionName) || empty($startDate) || empty($endDate)) {
+            if (empty($promotionName) || empty($startDate) || empty($endDate) || empty($promotionType)) {
                 $_SESSION['error'] = "All fields are required.";
                 header('Location: index.php?controller=adminPromotion&action=create');
                 exit;
@@ -89,8 +86,7 @@ class AdminPromotionController {
                     $endDate,
                     $discountPercentage,
                     $fixedPrice,
-                    $buyQuantity,
-                    $getQuantity
+                    $promotionType
                 );
                 $_SESSION['message'] = "Promotion created successfully.";
                 header('Location: index.php?controller=adminPromotion&action=index');
@@ -133,8 +129,13 @@ class AdminPromotionController {
             
             $discountPercentage = null;
             $fixedPrice = null;
-            $buyQuantity = null;
-            $getQuantity = null;
+
+            // Kiểm tra promotion_type hợp lệ
+            if (!in_array($promotionType, ['discount', 'fixed'])) {
+                $_SESSION['error'] = "Invalid promotion type.";
+                header('Location: index.php?controller=adminPromotion&action=edit&promotion_id=' . $promotionId);
+                exit;
+            }
 
             if ($promotionType === 'discount') {
                 $discountPercentage = isset($_POST['discount_percentage']) ? (float)$_POST['discount_percentage'] : 0;
@@ -150,17 +151,9 @@ class AdminPromotionController {
                     header('Location: index.php?controller=adminPromotion&action=edit&promotion_id=' . $promotionId);
                     exit;
                 }
-            } elseif ($promotionType === 'buy_get') {
-                $buyQuantity = isset($_POST['buy_quantity']) ? (int)$_POST['buy_quantity'] : 0;
-                $getQuantity = isset($_POST['get_quantity']) ? (int)$_POST['get_quantity'] : 0;
-                if ($buyQuantity <= 0 || $getQuantity <= 0) {
-                    $_SESSION['error'] = "Buy and get quantities must be greater than 0.";
-                    header('Location: index.php?controller=adminPromotion&action=edit&promotion_id=' . $promotionId);
-                    exit;
-                }
             }
 
-            if (empty($promotionName) || empty($startDate) || empty($endDate)) {
+            if (empty($promotionName) || empty($startDate) || empty($endDate) || empty($promotionType)) {
                 $_SESSION['error'] = "All fields are required.";
                 header('Location: index.php?controller=adminPromotion&action=edit&promotion_id=' . $promotionId);
                 exit;
@@ -180,8 +173,7 @@ class AdminPromotionController {
                     $endDate,
                     $discountPercentage,
                     $fixedPrice,
-                    $buyQuantity,
-                    $getQuantity
+                    $promotionType
                 );
                 $_SESSION['message'] = "Promotion updated successfully.";
                 header('Location: index.php?controller=adminPromotion&action=index');

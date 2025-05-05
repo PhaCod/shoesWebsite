@@ -1,3 +1,15 @@
+
+<!-- <head>
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/zuramai/mazer@docs/demo/assets/compiled/css/app.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/zuramai/mazer@docs/demo/assets/compiled/css/app-dark.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/zuramai/mazer@docs/demo/assets/compiled/css/iconly.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.3.0/css/dataTables.dataTables.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.3.0/css/dataTables.dataTables.rtl.css">
+    
+
+</head> -->
+
 <style>
     .admin-actions1 {
         margin-top: 5px;
@@ -58,6 +70,8 @@
         border-radius: 4px;
         border: 1px solid #ddd;
     }
+
+    
 </style>
 
 <div class="admin-header">
@@ -93,7 +107,7 @@
     <button type="submit">Tìm Kiếm</button>
 </form>
 
-<table class="admin-table">
+<table class="table table-striped admin-table">
     <thead>
         <tr>
             <th>Thumbnail</th>
@@ -106,6 +120,7 @@
             <th>Status</th>
             <th>Hành Động</th>
         </tr>
+        
     </thead>
     <tbody>
         <?php if (empty($news)): ?>
@@ -128,9 +143,8 @@
                         <?php
                         $news_types = [
                             'general' => 'Tin Tức Thông Thường',
-                            'flash_sale_50' => 'Flash Sale 50%',
-                            'fixed_price_100k' => 'Rẻ Vô Địch 100k',
-                            'buy_2_get_1' => 'Mua 2 Tặng 1'
+                            'flash_sale' => 'Sale sập sàn',
+                            'fixed_price' => 'Rẻ Vô Địch',
                         ];
                         echo $news_types[$item['news_type']] ?? 'Không xác định';
                         ?>
