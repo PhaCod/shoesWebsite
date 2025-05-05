@@ -1,9 +1,9 @@
 <?php
 class Database {
     private $host = 'localhost';
-    private $db_name = 'shoe';
+    private $db_name = 'shoes';
     private $username = 'root';
-    private $password = '';
+    private $password = '123456789';
     private $pdo;
 
     public function __construct() {

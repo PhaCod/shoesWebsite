@@ -9,7 +9,7 @@ class AdminController {
         $this->productModel = new ProductModel();
         $database = new Database();
         $this->db = $database->getConnection();
-    }
+    }   
 
     public function dashboard() {
         if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {

@@ -1,5 +1,5 @@
 <?php
-require_once 'models/ProductModel.php';
+require_once 'models/ProductModelv2.php';
 
 class ProductsController {
     private $productModel;
@@ -9,7 +9,23 @@ class ProductsController {
     }
 
     public function index() {
-        $products = $this->productModel->getAllProducts();
+        // Get keyword and category from query string
+        $keyword = isset($_GET['keyword']) ? trim($_GET['keyword']) : '';
+        $category = isset($_GET['category']) ? trim($_GET['category']) : '';
+
+        // Pagination parameters
+        $perPage = 8; // Số sản phẩm trên mỗi trang
+        $currentPage = isset($_GET['page']) && is_numeric($_GET['page']) && $_GET['page'] > 0 ? (int)$_GET['page'] : 1;
+        $offset = ($currentPage - 1) * $perPage;
+
+        // Fetch products with pagination
+        $products = $this->productModel->getProducts($keyword, $category, $perPage, $offset);
+
+        // Get total number of products
+        $totalProducts = $this->productModel->getTotalProducts($keyword, $category);
+        $totalPages = ceil($totalProducts / $perPage);
+
+        // Pass data to view
         require_once 'views/components/header.php';
         require_once 'views/pages/products.php';
     }
@@ -28,7 +44,7 @@ class ProductsController {
             exit;
         }
 
-        // Xử lý thêm vào giỏ hàng
+        // Handle add to cart
         if (isset($_POST['add_to_cart'])) {
             $quantity = isset($_POST['quantity']) ? (int)$_POST['quantity'] : 1;
             
@@ -36,12 +52,10 @@ class ProductsController {
                 $quantity = 1;
             }
             
-            // Khởi tạo giỏ hàng nếu chưa tồn tại
             if (!isset($_SESSION['cart'])) {
                 $_SESSION['cart'] = [];
             }
             
-            // Thêm vào giỏ hàng hoặc cập nhật số lượng nếu đã có
             if (isset($_SESSION['cart'][$id])) {
                 $_SESSION['cart'][$id]['quantity'] += $quantity;
             } else {
@@ -54,7 +68,6 @@ class ProductsController {
                 ];
             }
             
-            // Chuyển hướng đến trang giỏ hàng
             header('Location: index.php?controller=cart&action=index');
             exit;
         }
