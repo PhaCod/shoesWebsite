@@ -1,6 +1,6 @@
 <?php
 require_once 'models/PromotionalProductModel.php';
-require_once 'models/ProductModel.php';
+require_once 'models/ProductModelv2.php';
 
 class AdminPromotionController {
     private $promotionModel;

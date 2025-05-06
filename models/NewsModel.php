@@ -1,5 +1,4 @@
 <?php
-require_once 'config/db_connect.php';
 
 class NewsModel {
     private $db;
