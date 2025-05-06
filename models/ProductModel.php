@@ -4,7 +4,7 @@ class ProductModel {
 
     public function __construct() {
         try {
-            $this->pdo = new PDO("mysql:host=127.0.0.1;dbname=shoe;charset=utf8mb4", "root", "");
+            $this->pdo = new PDO("mysql:host=127.0.0.1;dbname=shoes;charset=utf8mb4", "root", "123456789");
             $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         } catch (PDOException $e) {
             die("Connection failed: " . $e->getMessage());
