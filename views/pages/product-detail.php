@@ -29,7 +29,6 @@
 </div>
 
 <script>
-    // JavaScript cho nút tăng/giảm số lượng
     document.querySelector('.quantity-minus').addEventListener('click', function() {
         let input = document.querySelector('.quantity-input');
         let value = parseInt(input.value);
@@ -44,7 +43,6 @@
         input.value = value + 1;
     });
 
-    // Đảm bảo giá trị không nhỏ hơn 1
     document.querySelector('.quantity-input').addEventListener('change', function() {
         if (this.value < 1) {
             this.value = 1;

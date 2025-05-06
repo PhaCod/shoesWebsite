@@ -12,7 +12,8 @@ class ProductModel {
     }
 
     public function getAllProducts() {
-        $stmt = $this->pdo->prepare("SELECT s.ShoesID AS id, s.Name AS name, s.Price AS price, s.Image AS image, s.Description AS description, c.Name AS category
+        $stmt = $this->pdo->prepare("SELECT s.ShoesID AS id, s.Name AS name, s.Price AS price, s.Image AS image, s.Description AS description, 
+                                           c.Name AS category, s.shoes_size, s.Stock
                                      FROM shoes s
                                      JOIN category c ON s.CategoryID = c.CategoryID");
         $stmt->execute();
@@ -20,7 +21,8 @@ class ProductModel {
     }
 
     public function getProducts($keyword = '', $category = '', $limit = 8, $offset = 0) {
-        $sql = "SELECT s.ShoesID AS id, s.Name AS name, s.Price AS price, s.Image AS image, s.Description AS description, c.Name AS category
+        $sql = "SELECT s.ShoesID AS id, s.Name AS name, s.Price AS price, s.Image AS image, s.Description AS description, 
+                       c.Name AS category, s.shoes_size, s.Stock
                 FROM shoes s
                 JOIN category c ON s.CategoryID = c.CategoryID
                 WHERE 1=1";
@@ -73,7 +75,8 @@ class ProductModel {
     }
 
     public function getProductById($id) {
-        $stmt = $this->pdo->prepare("SELECT s.ShoesID AS id, s.Name AS name, s.Price AS price, s.Image AS image, s.Description AS description, c.Name AS category
+        $stmt = $this->pdo->prepare("SELECT s.ShoesID AS id, s.Name AS name, s.Price AS price, s.Image AS image, s.Description AS description, 
+                                           c.Name AS category, s.CategoryID AS category_id, s.shoes_size, s.Stock
                                      FROM shoes s
                                      JOIN category c ON s.CategoryID = c.CategoryID
                                      WHERE s.ShoesID = ?");

@@ -9,11 +9,9 @@ class ProductsController {
     }
 
     public function index() {
-        // Get keyword and category from query string
         $keyword = isset($_GET['keyword']) ? trim($_GET['keyword']) : '';
         $category = isset($_GET['category']) ? trim($_GET['category']) : '';
 
-        // Pagination parameters
         $perPage = 8; // Số sản phẩm trên mỗi trang
         $currentPage = isset($_GET['page']) && is_numeric($_GET['page']) && $_GET['page'] > 0 ? (int)$_GET['page'] : 1;
         $offset = ($currentPage - 1) * $perPage;
