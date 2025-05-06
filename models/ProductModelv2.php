@@ -12,7 +12,8 @@ class ProductModel {
     }
 
     public function getAllProducts() {
-        $stmt = $this->pdo->prepare("SELECT s.ShoesID AS id, s.Name AS name, s.Price AS price, s.Image AS image, s.Description AS description, c.Name AS category
+        $stmt = $this->pdo->prepare("SELECT s.ShoesID AS id, s.Name AS name, s.Price AS price, s.Image AS image, s.Description AS description, 
+                                           c.Name AS category, s.shoes_size, s.Stock
                                      FROM shoes s
                                      JOIN category c ON s.CategoryID = c.CategoryID");
         $stmt->execute();
@@ -20,26 +21,24 @@ class ProductModel {
     }
 
     public function getProducts($keyword = '', $category = '', $limit = 8, $offset = 0) {
-        $sql = "SELECT s.ShoesID AS id, s.Name AS name, s.Price AS price, s.Image AS image, s.Description AS description, c.Name AS category
+        $sql = "SELECT s.ShoesID AS id, s.Name AS name, s.Price AS price, s.Image AS image, s.Description AS description, 
+                       c.Name AS category, s.shoes_size, s.Stock
                 FROM shoes s
                 JOIN category c ON s.CategoryID = c.CategoryID
                 WHERE 1=1";
         $params = [];
     
-        // Add keyword search condition
         if (!empty($keyword)) {
             $sql .= " AND (s.Name LIKE ? OR s.Description LIKE ?)";
             $params[] = '%' . $keyword . '%';
             $params[] = '%' . $keyword . '%';
         }
     
-        // Add category filter condition
         if (!empty($category)) {
             $sql .= " AND c.Name = ?";
             $params[] = $category;
         }
     
-        // Add limit and offset directly
         $sql .= " LIMIT " . (int)$limit . " OFFSET " . (int)$offset;
     
         $stmt = $this->pdo->prepare($sql);
@@ -71,11 +70,40 @@ class ProductModel {
     }
 
     public function getProductById($id) {
-        $stmt = $this->pdo->prepare("SELECT s.ShoesID AS id, s.Name AS name, s.Price AS price, s.Image AS image, s.Description AS description, c.Name AS category
+        $stmt = $this->pdo->prepare("SELECT s.ShoesID AS id, s.Name AS name, s.Price AS price, s.Image AS image, s.Description AS description, 
+                                           c.Name AS category, s.CategoryID AS category_id, s.shoes_size, s.Stock
                                      FROM shoes s
                                      JOIN category c ON s.CategoryID = c.CategoryID
                                      WHERE s.ShoesID = ?");
         $stmt->execute([$id]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    // Thêm sản phẩm mới
+    public function addProduct($name, $price, $stock, $description, $categoryId, $shoesSize, $image) {
+        $stmt = $this->pdo->prepare("INSERT INTO shoes (Name, Price, Stock, Description, DateCreate, DateUpdate, CategoryID, shoes_size, Image) 
+                                     VALUES (?, ?, ?, ?, CURDATE(), CURDATE(), ?, ?, ?)");
+        return $stmt->execute([$name, $price, $stock, $description, $categoryId, $shoesSize, $image]);
+    }
+
+    // Cập nhật sản phẩm
+    public function updateProduct($id, $name, $price, $stock, $description, $categoryId, $shoesSize, $image) {
+        $stmt = $this->pdo->prepare("UPDATE shoes 
+                                     SET Name = ?, Price = ?, Stock = ?, Description = ?, DateUpdate = CURDATE(), CategoryID = ?, shoes_size = ?, Image = ? 
+                                     WHERE ShoesID = ?");
+        return $stmt->execute([$name, $price, $stock, $description, $categoryId, $shoesSize, $image, $id]);
+    }
+
+    // Xóa sản phẩm
+    public function deleteProduct($id) {
+        $stmt = $this->pdo->prepare("DELETE FROM shoes WHERE ShoesID = ?");
+        return $stmt->execute([$id]);
+    }
+
+    // Lấy danh sách danh mục
+    public function getCategories() {
+        $stmt = $this->pdo->prepare("SELECT CategoryID AS id, Name AS name FROM category");
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }

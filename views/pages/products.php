@@ -5,7 +5,7 @@
 </div>
 
 <!-- Form tìm kiếm với CSS inline -->
-<div class="search-form" style="margin: 20px 0; text-align: center;">
+<div class="search-form" style="margin: 20px 0; text-align: left;">
     <form action="/shoesWebsite/index.php?controller=products&action=index" method="get" style="display: inline-block;">
         <input type="hidden" name="controller" value="products">
         <input type="hidden" name="action" value="index">
@@ -21,22 +21,8 @@
 
 <div class="products">
     <?php
-    // Lọc theo danh mục nếu có
     $category = isset($_GET['category']) ? $_GET['category'] : '';
     $keyword = isset($_GET['keyword']) ? $_GET['keyword'] : '';
-
-    // Nếu có danh mục hoặc từ khóa, hiển thị thông báo
-    if (!empty($category) || !empty($keyword)) {
-        echo '<p>Showing results';
-        if (!empty($category)) {
-            echo ' for category: ' . htmlspecialchars($category);
-        }
-        if (!empty($keyword)) {
-            echo ' for keyword: ' . htmlspecialchars($keyword);
-        }
-        echo '</p>';
-    }
-
     if (empty($products)) {
         echo '<p>No products found.</p>';
     } else {

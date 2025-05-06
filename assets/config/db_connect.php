@@ -1,5 +1,4 @@
 <?php
-// Thông tin kết nối cơ sở dữ liệu
 $host = '127.0.0.1';
 $dbname = 'shoes';
 $username = 'root'; // Thay đổi nếu bạn sử dụng tài khoản khác
