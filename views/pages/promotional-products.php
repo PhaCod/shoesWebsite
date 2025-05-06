@@ -21,7 +21,8 @@
         foreach ($filtered_products as $product) {
             echo '<div class="product-card">';
             echo '<div class="product-img">';
-            echo '<img src="' . (file_exists($_SERVER['DOCUMENT_ROOT'] . '/shoesWebsite/' . $product['image']) ? '/shoesWebsite/' . htmlspecialchars($product['image']) : '/shoesWebsite/assets/images/placeholder.png') . '" alt="' . htmlspecialchars($product['name']) . '" loading="lazy">';
+            $imageUrl = !empty($product['image']) && filter_var($product['image'], FILTER_VALIDATE_URL) ? htmlspecialchars($product['image']) : '/shoesWebsite/public/placeholder.jpg';
+            echo '<img src="' . $imageUrl . '" alt="' . htmlspecialchars($product['name']) . '" loading="lazy">';
             echo '</div>';
             echo '<div class="product-info">';
             echo '<h3>' . htmlspecialchars($product['name']) . '</h3>';

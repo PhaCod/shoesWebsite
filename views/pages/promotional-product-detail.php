@@ -1,7 +1,11 @@
 <div class="product-detail">
     <div class="product-detail-img">
-        <img src="/shoesWebsite/<?php echo htmlspecialchars($product['image']); ?>" alt="<?php echo htmlspecialchars($product['name']); ?>" loading="lazy">
-    </div>
+        <?php
+            $imageUrl = !empty($product['image']) && filter_var($product['image'], FILTER_VALIDATE_URL) ? htmlspecialchars($product['image']) : '/shoesWebsite/public/placeholder.jpg';
+
+                echo '<img src="' . $imageUrl . '" alt="' . htmlspecialchars($product['name']) . '" loading="lazy" >';
+        ?>
+        </div>
     <div class="product-detail-info">
         <h1><?php echo htmlspecialchars($product['name']); ?></h1>
         <?php if (!empty($product['promotion'])): ?>
