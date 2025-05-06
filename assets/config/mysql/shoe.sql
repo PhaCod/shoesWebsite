@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 04, 2025 at 07:19 PM
+-- Generation Time: May 06, 2025 at 06:52 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -271,7 +271,7 @@ CREATE TABLE `news` (
 --
 
 INSERT INTO `news` (`NewsID`, `Title`, `Description`, `Content`, `AdminID`, `thumbnail`, `DateCreated`, `news_type`, `promotion_id`) VALUES
-(1, 'Giảm giá mùa hè', 'Ưu đãi lên đến 50%', 'Chi tiết khuyến mãi mùa hè...', 1, 'assets/images/news/news_1_1745860271.jpg', '2024-01-01 10:00:00', 'fixed_price', 2),
+(1, 'Giảm giá mùa hè', 'Ưu đãi lên đến 50%', 'Chi tiết khuyến mãi mùa hè...', 1, 'assets/images/news/news_1_1746506531.png', '2024-01-01 10:00:00', 'fixed_price', 2),
 (2, 'Khuyến mãi hè', 'Giảm giá 20% cho tất cả giày thể thao', 'Chi tiết chương trình khuyến mãi...', 1, 'assets/images/news/news_2_1746290159.jpg', '2024-02-01 10:00:00', 'flash_sale', 5),
 (3, 'Ra mắt dòng mới', 'Giới thiệu bộ sưu tập thu đông', 'Chi tiết bộ sưu tập thu đông...', 2, 'assets/images/news/news_3_1746372971.jpg', '2024-03-01 10:00:00', 'flash_sale', 4),
 (4, 'Flash Sale', 'Giảm giá sốc trong 2 giờ', 'Chi tiết flash sale...', 3, 'assets/images/news/news_4_1746290190.jpg', '2024-04-01 10:00:00', 'flash_sale', 6),
@@ -282,8 +282,8 @@ INSERT INTO `news` (`NewsID`, `Title`, `Description`, `Content`, `AdminID`, `thu
 (9, 'Combo abc', 'xyz', 'mno', 8, 'assets/images/news/news_9_1746290840.jpg', '2024-09-01 10:00:00', 'fixed_price', 2),
 (10, 'Sự kiện offline', 'Tham gia sự kiện offline tại TP.HCM', 'Chi tiết sự kiện...', 9, 'assets/images/news/news_10_1746290897.jpg', '2024-10-01 10:00:00', 'general', NULL),
 (11, 'Tin tuyển dụng', 'Tuyển dụng nhân viên kinh doanh', 'Thông tin tuyển dụng...', 10, 'assets/images/news/news_11_1745860361.jpg', '2024-11-01 10:00:00', 'general', NULL),
-(18, 'ádaddad', 'adadad', 'adadsd', 1, 'assets/images/news/news_1745936989.jpg', '2025-04-29 21:29:49', 'fixed_price', 3),
-(19, 'ádasda', 'sdasd', 'ádasd', 1, 'assets/images/news/news_1746008449.jpg', '2025-04-30 17:20:49', 'fixed_price', 13);
+(18, 'ádaddad', 'adadad', 'adadsd', 1, 'assets/images/news/news_18_1746506547.png', '2025-04-29 21:29:49', 'fixed_price', 3),
+(19, 'ádasda', 'sdasd', 'ádasd', 1, 'assets/images/news/news_19_1746506556.png', '2025-04-30 17:20:49', 'fixed_price', 13);
 
 -- --------------------------------------------------------
 
@@ -303,16 +303,17 @@ CREATE TABLE `news_clicks` (
 --
 
 INSERT INTO `news_clicks` (`click_id`, `news_id`, `click_count`, `last_clicked_at`) VALUES
-(1, 4, 15, '2025-05-04 17:16:32'),
-(2, 6, 22, '2025-05-04 17:04:48'),
-(3, 5, 1, '2025-04-30 09:34:08'),
+(1, 4, 16, '2025-05-06 03:39:29'),
+(2, 6, 27, '2025-05-06 04:48:53'),
+(3, 5, 2, '2025-05-06 03:39:34'),
 (4, 7, 3, '2025-05-04 17:04:56'),
-(5, 3, 8, '2025-05-04 17:14:48'),
-(6, 1, 5, '2025-05-03 16:50:07'),
-(7, 2, 14, '2025-04-30 10:48:20'),
+(5, 3, 9, '2025-05-06 03:39:25'),
+(6, 1, 11, '2025-05-06 04:49:53'),
+(7, 2, 18, '2025-05-06 04:49:52'),
 (8, 19, 4, '2025-05-04 17:18:08'),
 (9, 18, 3, '2025-04-30 10:46:59'),
-(10, 11, 2, '2025-05-03 16:50:14');
+(10, 11, 2, '2025-05-03 16:50:14'),
+(11, 8, 1, '2025-05-06 03:39:39');
 
 -- --------------------------------------------------------
 
@@ -439,14 +440,18 @@ CREATE TABLE `promotion_shoes` (
 --
 
 INSERT INTO `promotion_shoes` (`promotion_id`, `shoe_id`) VALUES
-(4, 2),
-(4, 3),
-(4, 4),
-(6, 5),
-(6, 6),
-(6, 7),
-(6, 8),
-(13, 1);
+(2, 1),
+(2, 2),
+(2, 3),
+(2, 4),
+(2, 5),
+(2, 6),
+(2, 7),
+(2, 8),
+(2, 9),
+(2, 10),
+(2, 11),
+(2, 12);
 
 -- --------------------------------------------------------
 
@@ -472,18 +477,18 @@ CREATE TABLE `shoes` (
 --
 
 INSERT INTO `shoes` (`ShoesID`, `Name`, `Price`, `Stock`, `Description`, `DateCreate`, `DateUpdate`, `Image`, `CategoryID`, `shoes_size`) VALUES
-(1, 'Nike Air Max', 2500000.00, 100, 'Giày chạy bộ cao cấp', '2025-01-01', '2025-03-01', 'nike.jpg', 1, 38.00),
-(2, 'Dr. Martens', 3000000.00, 50, 'Giày boot thời trang', '2025-02-01', '2025-03-15', 'drmartens.jpg', 2, 39.00),
-(3, 'Nike Air Zoom', 120.00, 50, 'Giày chạy bộ cao cấp', '2024-01-01', '2024-03-01', 'nike_air.png', 1, 40.00),
-(4, 'Adidas Ultraboost', 150.00, 30, 'Giày thể thao Adidas', '2024-02-01', '2024-04-01', 'ultraboost.png', 1, 41.00),
-(5, 'Converse Classic', 60.00, 40, 'Giày cổ điển Converse', '2024-01-15', '2024-03-10', 'converse.png', 2, 42.00),
-(6, 'Vans Old Skool', 70.00, 35, 'Giày Vans thời trang', '2024-02-10', '2024-04-12', 'vans_old.png', 2, 43.00),
-(7, 'Timberland Boots', 180.00, 20, 'Giày bốt cao cấp', '2024-01-25', '2024-04-05', 'timberland.png', 3, 44.00),
-(8, 'Nike Sandals', 40.00, 25, 'Dép sandal Nike', '2024-03-01', '2024-03-20', 'nike_sandal.png', 4, 45.00),
-(9, 'Oxford Shoes', 90.00, 15, 'Giày tây nam lịch sự', '2024-01-18', '2024-02-25', 'oxford.png', 5, 46.00),
-(10, 'Adidas Slides', 35.00, 60, 'Dép đi trong nhà Adidas', '2024-02-22', '2024-03-30', 'slides.png', 6, 47.00),
-(11, 'Jordan 1', 200.00, 10, 'Giày bóng rổ Jordan', '2024-01-05', '2024-04-10', 'jordan1.png', 7, 48.00),
-(12, 'Nike Tiempo', 95.00, 12, 'Giày đá bóng Nike Tiempo', '2024-02-14', '2024-03-28', 'tiempo.png', 8, 49.00);
+(1, 'Nike Air Max', 25000.00, 100, 'Giày chạy bộ cao cấp', '2025-01-01', '2025-03-01', 'https://sneakerdaily.vn/wp-content/uploads/2024/01/Giay-Nike-Air-Max-1-White-Black-FD9082-107-1.jpg', 1, 38.00),
+(2, 'Dr. Martens', 3000000.00, 50, 'Giày boot thời trang', '2025-02-01', '2025-03-15', 'https://images-na.ssl-images-amazon.com/images/I/71LL6yCVP4L.jpg', 2, 39.00),
+(3, 'Nike Air Zoom', 120.00, 50, 'Giày chạy bộ cao cấp', '2024-01-01', '2024-03-01', 'https://supersports.com.vn/cdn/shop/files/FD2722-002-2_1024x1024.jpg?v=1726656415', 1, 40.00),
+(4, 'Adidas Ultraboost', 150.00, 30, 'Giày thể thao Adidas', '2024-02-01', '2024-04-01', 'https://product.hstatic.net/1000361048/product/giay_ultraboost_light_djen_gy9351_01_standard_f5f5bedd68df46a9bc78d9dcdccb49f8_master.jpg', 1, 41.00),
+(5, 'Converse Classic', 60.00, 40, 'Giày cổ điển Converse', '2024-01-15', '2024-03-10', 'https://drake.vn/image/cache/catalog/Converse/GIA%CC%80Y%202/M9160C/M9160C_1-650x650.jpg', 2, 42.00),
+(6, 'Vans Old Skool', 70.00, 35, 'Giày Vans thời trang', '2024-02-10', '2024-04-12', 'https://product.hstatic.net/1000382698/product/vn0a5fcby28-2s_147ed67b9ed04d679f3a56e5e9ae2595_master.jpg', 2, 43.00),
+(7, 'Timberland Boots', 180.00, 20, 'Giày bốt cao cấp', '2024-01-25', '2024-04-05', 'https://assets.timberland.com/images/t_img/f_auto,h_650,w_650,e_sharpen:60/dpr_2.0/v1719373359/TB165016713-HERO/Mens-Direct-Attach-6-Steel-Toe-Waterproof-Work-Boot.png', 3, 44.00),
+(8, 'Nike Sandals', 40.00, 25, 'Dép sandal Nike', '2024-03-01', '2024-03-20', 'https://supersports.com.vn/cdn/shop/files/FJ6043-001-1_1200x1200.jpg?v=1725613858', 4, 45.00),
+(9, 'Oxford Shoes', 90.00, 15, 'Giày tây nam lịch sự', '2024-01-18', '2024-02-25', 'https://www.beckettsimonon.com/cdn/shop/products/color_black_1_dean_oxford.jpg?v=1618340935', 5, 46.00),
+(10, 'Adidas Slides', 35.00, 60, 'Dép đi trong nhà Adidas', '2024-02-22', '2024-03-30', 'https://assets.adidas.com/images/w_600,f_auto,q_auto/854a6fec31404ffd8cfaaf4200bd0b13_9366/Dep_adilette_22_trang_HQ4672_01_standard.jpg', 6, 47.00),
+(11, 'Jordan 1', 200.00, 10, 'Giày bóng rổ Jordan', '2024-01-05', '2024-04-10', 'https://product.hstatic.net/200000858039/product/jordan-1-high-black-white-trang-den_5f542b2addee453e9868730c6623d06b.png', 7, 48.00),
+(12, 'Nike Tiempo', 95.00, 12, 'Giày đá bóng Nike Tiempo', '2024-02-14', '2024-03-28', 'https://static.nike.com/a/images/t_PDP_936_v1/f_auto,q_auto:eco/a0f2b725-0806-41ce-b437-e0c3eacfba09/LEGEND+10+ELITE+FG+NU1.png', 8, 49.00);
 
 --
 -- Indexes for dumped tables
@@ -636,7 +641,7 @@ ALTER TABLE `news`
 -- AUTO_INCREMENT for table `news_clicks`
 --
 ALTER TABLE `news_clicks`
-  MODIFY `click_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `click_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT for table `order`

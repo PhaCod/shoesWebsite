@@ -13,7 +13,7 @@ class NewsController {
 
     public function index() {
         $search = isset($_GET['search']) ? trim($_GET['search']) : '';
-        $limit = 6;
+        $limit = 8;
         $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
         $page = max(1, $page);
         $offset = ($page - 1) * $limit;
@@ -41,7 +41,7 @@ class NewsController {
         }
 
         // Ghi lại lượt nhấp
-        $this->newsModel->incrementClickCount($news_id);
+        // $this->newsModel->incrementClickCount($news_id);
 
         require_once 'views/components/header.php';
         require_once 'views/pages/news_detail.php';

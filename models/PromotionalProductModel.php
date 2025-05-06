@@ -1,6 +1,5 @@
 <?php
-require_once 'config/db_connect.php';
-require_once 'models/ProductModel.php';
+require_once 'models/ProductModelv2.php';
 
 class PromotionalProductModel {
     private $productModel;
