@@ -56,18 +56,41 @@ class PromotionalProductModel {
         return $product['price'];
     }
 
-    public function getAllPromotions($limit = 10, $offset = 0) {
-        $query = "SELECT * FROM promotions ORDER BY start_date DESC LIMIT :limit OFFSET :offset";
+    public function getAllPromotions($limit = 10, $offset = 0, $keyword = '', $sort = 'ASC') {
+        $query = "SELECT * FROM promotions WHERE 1=1";
+        $params = [];
+
+        if (!empty($keyword)) {
+            $query .= " AND promotion_name LIKE :keyword";
+            $params[':keyword'] = '%' . $keyword . '%';
+        }
+
+        $query .= " ORDER BY promotion_id " . ($sort === 'DESC' ? 'DESC' : 'ASC');
+        $query .= " LIMIT :limit OFFSET :offset";
+
         $stmt = $this->db->prepare($query);
         $stmt->bindValue(':limit', (int)$limit, PDO::PARAM_INT);
         $stmt->bindValue(':offset', (int)$offset, PDO::PARAM_INT);
+        if (!empty($keyword)) {
+            $stmt->bindValue(':keyword', $params[':keyword'], PDO::PARAM_STR);
+        }
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function getPromotionsCount() {
-        $query = "SELECT COUNT(*) FROM promotions";
+    public function getPromotionsCount($keyword = '') {
+        $query = "SELECT COUNT(*) FROM promotions WHERE 1=1";
+        $params = [];
+
+        if (!empty($keyword)) {
+            $query .= " AND promotion_name LIKE :keyword";
+            $params[':keyword'] = '%' . $keyword . '%';
+        }
+
         $stmt = $this->db->prepare($query);
+        if (!empty($keyword)) {
+            $stmt->bindValue(':keyword', $params[':keyword'], PDO::PARAM_STR);
+        }
         $stmt->execute();
         return $stmt->fetchColumn();
     }
@@ -146,19 +169,16 @@ class PromotionalProductModel {
     }
 
     public function deletePromotion($promotionId) {
-        // Xóa các liên kết trong bảng news liên quan đến promotion
         $query = "UPDATE news SET promotion_id = NULL WHERE promotion_id = :promotion_id";
         $stmt = $this->db->prepare($query);
         $stmt->bindValue(':promotion_id', (int)$promotionId, PDO::PARAM_INT);
         $stmt->execute();
 
-        // Xóa các sản phẩm liên quan trong bảng promotion_shoes
         $query = "DELETE FROM promotion_shoes WHERE promotion_id = :promotion_id";
         $stmt = $this->db->prepare($query);
         $stmt->bindValue(':promotion_id', (int)$promotionId, PDO::PARAM_INT);
         $stmt->execute();
 
-        // Xóa chương trình khuyến mãi
         $query = "DELETE FROM promotions WHERE promotion_id = :promotion_id";
         $stmt = $this->db->prepare($query);
         $stmt->bindValue(':promotion_id', (int)$promotionId, PDO::PARAM_INT);

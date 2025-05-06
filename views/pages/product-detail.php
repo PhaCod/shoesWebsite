@@ -2,11 +2,19 @@
 
 <div class="product-detail">
     <div class="product-detail-img">
-        <img src="/shoesWebsite/<?php echo htmlspecialchars($product['image']); ?>" alt="<?php echo htmlspecialchars($product['name']); ?>" loading="lazy">
+    <?php
+        $imageUrl = !empty($product['image']) && filter_var($product['image'], FILTER_VALIDATE_URL) ? htmlspecialchars($product['image']) : '/shoesWebsite/public/placeholder.jpg';
+
+            echo '<img src="' . $imageUrl . '" alt="' . htmlspecialchars($product['name']) . '" loading="lazy" >';
+    ?>
     </div>
     <div class="product-detail-info">
         <h1><?php echo htmlspecialchars($product['name']); ?></h1>
-        <div class="price">$<?php echo number_format($product['price'], 2); ?></div>
+        <?php if (isset($product['final_price']) && $product['final_price'] != $product['price']) { ?>
+            <div class="price"><s>$<?php echo number_format($product['price'], 2); ?></s><br>$<?php echo number_format($product['final_price'], 2); ?></div>
+        <?php } else { ?>
+            <div class="price">$<?php echo number_format($product['price'], 2); ?></div>
+        <?php } ?>
         <div class="description"><?php echo htmlspecialchars($product['description']); ?></div>
         
         <form method="post" action="">

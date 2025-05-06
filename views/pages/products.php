@@ -13,7 +13,7 @@
                value="<?php echo isset($_GET['keyword']) ? htmlspecialchars($_GET['keyword']) : ''; ?>" 
                style="padding: 10px; width: 300px; border: 1px solid #ccc; border-radius: 4px;">
         <button type="submit" 
-                style="padding: 10px 20px; background-color: #ff6b6b#; color: white; border: none; border-radius: 4px; cursor: pointer;"
+                style="padding: 10px 20px; background-color: #ff6b6b; color: white; border: none; border-radius: 4px; cursor: pointer;"
                 onmouseover="this.style.backgroundColor='#ff5252'"
                 onmouseout="this.style.backgroundColor='#ff6b6b'">Search</button>
     </form>
@@ -48,7 +48,11 @@
             echo '</div>';
             echo '<div class="product-info">';
             echo '<h3>' . htmlspecialchars($product['name']) . '</h3>';
-            echo '<div class="price">$' . number_format($product['price'], 2) . '</div>';
+            if (isset($product['final_price']) && $product['final_price'] != $product['price']) {
+                echo '<div class="price"><s>$' . number_format($product['price'], 2) . '</s><br>$' . number_format($product['final_price'], 2) . '</div>';
+            } else {
+                echo '<div class="price">$' . number_format($product['price'], 2) . '</div>';
+            }
             echo '<a href="/shoesWebsite/index.php?controller=products&action=detail&id=' . $product['id'] . '" class="btn">View Details</a>';
             echo '</div>';
             echo '</div>';

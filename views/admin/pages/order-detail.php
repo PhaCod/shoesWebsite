@@ -1,54 +1,6 @@
-<?php
-// In a real application, this would come from a database
-$order_id = isset($_GET['id']) ? $_GET['id'] : '';
-
-// Sample order data
-$order = [
-    'id' => $order_id,
-    'customer' => 'John Doe',
-    'email' => 'john@example.com',
-    'date' => 'Jun 12, 2023',
-    'status' => 'Delivered',
-    'address' => '123 Main St, Anytown, CA 12345',
-    'payment_method' => 'Credit Card',
-    'items' => [
-        [
-            'name' => 'Classic Sneakers',
-            'price' => 79.99,
-            'quantity' => 1
-        ],
-        [
-            'name' => 'Running Shoes',
-            'price' => 99.99,
-            'quantity' => 2
-        ]
-    ]
-];
-
-// Calculate totals
-$subtotal = 0;
-foreach ($order['items'] as $item) {
-    $subtotal += $item['price'] * $item['quantity'];
-}
-$shipping = 10.00;
-$total = $subtotal + $shipping;
-
-// Handle status update
-if (isset($_POST['update_status'])) {
-    $new_status = $_POST['status'];
-    // In a real application, you would update the database
-    $order['status'] = $new_status;
-}
-?>
-
 <div class="admin-header">
-    <h1>Order #<?php echo $order_id; ?></h1>
-    <a href="index.php?page=orders" class="btn btn-secondary">Back to Orders</a>
-</div>
-
-<div class="admin-header">
-    <h1>Đơn Hàng #<?php echo $order['id']; ?></h1>
-    <a href="/shoesWebsite/admin/index.php?controller=adminOrder&action=orders" class="btn btn-secondary">Quay Lại Danh Sách Đơn Hàng</a>
+    <h1>Đơn Hàng #<?php echo htmlspecialchars($order['OrderID']); ?></h1>
+    <a href="/shoesWebsite/views/admin/index.php?controller=adminOrder&action=orders" class="btn btn-secondary">Quay Lại Danh Sách Đơn Hàng</a>
 </div>
 
 <div class="order-detail">
@@ -56,37 +8,31 @@ if (isset($_POST['update_status'])) {
         <h2>Thông Tin Đơn Hàng</h2>
         <div class="info-group">
             <div class="info-label">Khách Hàng:</div>
-            <div class="info-value"><?php echo $order['customer']; ?></div>
-        </div>
-        <div class="info-group">
-            <div class="info-label">Email:</div>
-            <div class="info-value"><?php echo $order['email']; ?></div>
+            <div class="info-value"><?php echo htmlspecialchars($order['customer_name']); ?> (<?php echo htmlspecialchars($order['Email']); ?>, <?php echo htmlspecialchars($order['Phone']); ?>)</div>
         </div>
         <div class="info-group">
             <div class="info-label">Ngày:</div>
-            <div class="info-value"><?php echo $order['date']; ?></div>
+            <div class="info-value"><?php echo date('M d, Y', strtotime($order['Date'])); ?></div>
         </div>
         <div class="info-group">
             <div class="info-label">Trạng Thái:</div>
             <div class="info-value">
-                <form method="post" class="status-form">
-                    <select name="status" onchange="this.form.submit()">
-                        <option value="Processing" <?php echo $order['status'] === 'Processing' ? 'selected' : ''; ?>>Đang Xử Lý</option>
-                        <option value="Shipped" <?php echo $order['status'] === 'Shipped' ? 'selected' : ''; ?>>Đã Gửi Hàng</option>
-                        <option value="Delivered" <?php echo $order['status'] === 'Delivered' ? 'selected' : ''; ?>>Đã Giao</option>
-                        <option value="Cancelled" <?php echo $order['status'] === 'Cancelled' ? 'selected' : ''; ?>>Đã Hủy</option>
-                    </select>
-                    <input type="hidden" name="update_status" value="1">
-                </form>
+                <select onchange="updateOrderStatus(<?php echo $order['OrderID']; ?>, this.value)">
+                    <option value="Pending" <?php echo $order['Status'] == 'Pending' ? 'selected' : ''; ?>>Pending</option>
+                    <option value="Processing" <?php echo $order['Status'] == 'Processing' ? 'selected' : ''; ?>>Processing</option>
+                    <option value="Shipped" <?php echo $order['Status'] == 'Shipped' ? 'selected' : ''; ?>>Shipped</option>
+                    <option value="Delivered" <?php echo $order['Status'] == 'Delivered' ? 'selected' : ''; ?>>Delivered</option>
+                    <option value="Cancelled" <?php echo $order['Status'] == 'Cancelled' ? 'selected' : ''; ?>>Cancelled</option>
+                </select>
             </div>
         </div>
         <div class="info-group">
-            <div class="info-label">Địa Chỉ:</div>
-            <div class="info-value"><?php echo $order['address']; ?></div>
+            <div class="info-label">Số Lượng:</div>
+            <div class="info-value"><?php echo htmlspecialchars($order['Quantity']); ?></div>
         </div>
         <div class="info-group">
-            <div class="info-label">Phương Thức Thanh Toán:</div>
-            <div class="info-value"><?php echo $order['payment_method']; ?></div>
+            <div class="info-label">Điểm VIP Được Tích Lũy:</div>
+            <div class="info-value"><?php echo number_format($order['Earned_VIP'], 2); ?> VND</div>
         </div>
     </div>
     
@@ -96,36 +42,52 @@ if (isset($_POST['update_status'])) {
             <tr>
                 <th>Sản Phẩm</th>
                 <th>Giá</th>
-                <th>Số Lượng</th>
                 <th>Tổng</th>
             </tr>
         </thead>
         <tbody>
-            <?php foreach ($order['items'] as $item): ?>
+            <?php if (empty($order['items'])): ?>
                 <tr>
-                    <td><?php echo $item['name']; ?></td>
-                    <td>$<?php echo number_format($item['price'], 2); ?></td>
-                    <td><?php echo $item['quantity']; ?></td>
-                    <td>$<?php echo number_format($item['price'] * $item['quantity'], 2); ?></td>
+                    <td colspan="3" style="text-align: center;">Không có sản phẩm nào.</td>
                 </tr>
-            <?php endforeach; ?>
+            <?php else: ?>
+                <?php
+                $subtotal = 0;
+                foreach ($order['items'] as $item):
+                    $itemTotal = $order['Quantity'] * $item['Price'];
+                    $subtotal += $itemTotal;
+                ?>
+                    <tr>
+                        <td><?php echo htmlspecialchars($item['product_name']); ?></td>
+                        <td><?php echo number_format($item['Price'], 2); ?> VND</td>
+                        <td><?php echo number_format($itemTotal, 2); ?> VND</td>
+                    </tr>
+                <?php endforeach; ?>
+            <?php endif; ?>
         </tbody>
         <tfoot>
             <tr>
-                <td colspan="3" class="text-right">Tạm Tính</td>
-                <td>$<?php echo number_format($subtotal, 2); ?></td>
+                <td colspan="2" class="text-right">Tạm Tính</td>
+                <td><?php echo number_format($subtotal, 2); ?> VND</td>
             </tr>
             <tr>
-                <td colspan="3" class="text-right">Phí Vận Chuyển</td>
-                <td>$<?php echo number_format($shipping, 2); ?></td>
+                <td colspan="2" class="text-right">Phí Vận Chuyển</td>
+                <td>0.00 VND</td>
             </tr>
             <tr>
-                <td colspan="3" class="text-right"><strong>Tổng Cộng</strong></td>
-                <td><strong>$<?php echo number_format($total, 2); ?></strong></td>
+                <td colspan="2" class="text-right"><strong>Tổng Cộng</strong></td>
+                <td><strong><?php echo number_format($order['Total_price'], 2); ?> VND</strong></td>
             </tr>
         </tfoot>
     </table>
 </div>
 
-<?php require_once 'views/admin/components/admin_footer.php'; ?>
+<script>
+function updateOrderStatus(orderId, status) {
+    if (confirm('Bạn có chắc muốn cập nhật trạng thái đơn hàng này?')) {
+        window.location.href = '/shoesWebsite/views/admin/index.php?controller=adminOrder&action=updateOrderStatus&id=' + orderId + '&status=' + status;
+    }
+}
+</script>
 
+<?php require_once __DIR__ . '/../components/admin_footer.php'; ?>

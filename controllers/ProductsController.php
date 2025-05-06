@@ -62,7 +62,7 @@ class ProductsController {
                 $_SESSION['cart'][$id] = [
                     'id' => $product['id'],
                     'name' => $product['name'],
-                    'price' => $product['price'],
+                    'price' => $product['final_price'], // Sử dụng final_price thay vì price
                     'image' => $product['image'],
                     'quantity' => $quantity
                 ];

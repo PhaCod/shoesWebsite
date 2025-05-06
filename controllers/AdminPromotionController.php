@@ -17,13 +17,16 @@ class AdminPromotionController {
             exit;
         }
 
-        $limit = 5; // Số lượng chương trình khuyến mãi trên mỗi trang
+        $limit = 5;
         $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
         $page = max(1, $page);
         $offset = ($page - 1) * $limit;
 
-        $promotions = $this->promotionModel->getAllPromotions($limit, $offset);
-        $totalPromotions = $this->promotionModel->getPromotionsCount();
+        $keyword = isset($_GET['keyword']) ? trim($_GET['keyword']) : '';
+        $sort = isset($_GET['sort']) && in_array($_GET['sort'], ['ASC', 'DESC']) ? $_GET['sort'] : 'ASC';
+
+        $promotions = $this->promotionModel->getAllPromotions($limit, $offset, $keyword, $sort);
+        $totalPromotions = $this->promotionModel->getPromotionsCount($keyword);
         $totalPages = ceil($totalPromotions / $limit);
 
         require_once 'views/admin/pages/promotion-list.php';
@@ -44,7 +47,6 @@ class AdminPromotionController {
             $discountPercentage = null;
             $fixedPrice = null;
 
-            // Kiểm tra promotion_type hợp lệ
             if (!in_array($promotionType, ['discount', 'fixed'])) {
                 $_SESSION['error'] = "Invalid promotion type.";
                 header('Location: index.php?controller=adminPromotion&action=create');
@@ -130,7 +132,6 @@ class AdminPromotionController {
             $discountPercentage = null;
             $fixedPrice = null;
 
-            // Kiểm tra promotion_type hợp lệ
             if (!in_array($promotionType, ['discount', 'fixed'])) {
                 $_SESSION['error'] = "Invalid promotion type.";
                 header('Location: index.php?controller=adminPromotion&action=edit&promotion_id=' . $promotionId);

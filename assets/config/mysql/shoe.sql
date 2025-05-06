@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 06, 2025 at 06:52 AM
+-- Generation Time: May 06, 2025 at 12:48 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -271,7 +271,7 @@ CREATE TABLE `news` (
 --
 
 INSERT INTO `news` (`NewsID`, `Title`, `Description`, `Content`, `AdminID`, `thumbnail`, `DateCreated`, `news_type`, `promotion_id`) VALUES
-(1, 'Giảm giá mùa hè', 'Ưu đãi lên đến 50%', 'Chi tiết khuyến mãi mùa hè...', 1, 'assets/images/news/news_1_1746506531.png', '2024-01-01 10:00:00', 'fixed_price', 2),
+(1, 'Giảm giá mùa hè', 'Ưu đãi', 'Chi tiết khuyến mãi mùa hè...', 1, 'assets/images/news/news_1_1746506531.png', '2024-01-01 10:00:00', 'fixed_price', 2),
 (2, 'Khuyến mãi hè', 'Giảm giá 20% cho tất cả giày thể thao', 'Chi tiết chương trình khuyến mãi...', 1, 'assets/images/news/news_2_1746290159.jpg', '2024-02-01 10:00:00', 'flash_sale', 5),
 (3, 'Ra mắt dòng mới', 'Giới thiệu bộ sưu tập thu đông', 'Chi tiết bộ sưu tập thu đông...', 2, 'assets/images/news/news_3_1746372971.jpg', '2024-03-01 10:00:00', 'flash_sale', 4),
 (4, 'Flash Sale', 'Giảm giá sốc trong 2 giờ', 'Chi tiết flash sale...', 3, 'assets/images/news/news_4_1746290190.jpg', '2024-04-01 10:00:00', 'flash_sale', 6),
@@ -279,11 +279,11 @@ INSERT INTO `news` (`NewsID`, `Title`, `Description`, `Content`, `AdminID`, `thu
 (6, 'Giao hàng miễn phí', 'Miễn phí vận chuyển toàn quốc', 'Chi tiết chương trình...', 5, 'assets/images/news/news_6_1746290493.jpg', '2024-06-01 10:00:00', 'general', NULL),
 (7, 'Đổi trả linh hoạt', 'Chính sách đổi trả 30 ngày', 'Chi tiết chính sách...', 6, 'assets/images/news/news_7_1746290558.jpg', '2024-07-01 10:00:00', 'general', NULL),
 (8, 'Khuyến mãi abc', 'abc', 'abc', 7, 'assets/images/news/news_8_1746290389.jpg', '2024-08-01 10:00:00', 'flash_sale', 7),
-(9, 'Combo abc', 'xyz', 'mno', 8, 'assets/images/news/news_9_1746290840.jpg', '2024-09-01 10:00:00', 'fixed_price', 2),
+(9, 'Combo abc', 'xyz', 'mno', 8, 'assets/images/news/news_9_1746526511.png', '2024-09-01 10:00:00', 'fixed_price', 2),
 (10, 'Sự kiện offline', 'Tham gia sự kiện offline tại TP.HCM', 'Chi tiết sự kiện...', 9, 'assets/images/news/news_10_1746290897.jpg', '2024-10-01 10:00:00', 'general', NULL),
-(11, 'Tin tuyển dụng', 'Tuyển dụng nhân viên kinh doanh', 'Thông tin tuyển dụng...', 10, 'assets/images/news/news_11_1745860361.jpg', '2024-11-01 10:00:00', 'general', NULL),
-(18, 'ádaddad', 'adadad', 'adadsd', 1, 'assets/images/news/news_18_1746506547.png', '2025-04-29 21:29:49', 'fixed_price', 3),
-(19, 'ádasda', 'sdasd', 'ádasd', 1, 'assets/images/news/news_19_1746506556.png', '2025-04-30 17:20:49', 'fixed_price', 13);
+(11, 'Tin tuyển dụng', 'Tuyển dụng nhân viên kinh doanh', 'Thông tin tuyển dụng...', 10, 'assets/images/news/news_11_1746526581.jpg', '2024-11-01 10:00:00', 'general', NULL),
+(18, 'Xả kho hè', 'adadad', 'adadsd', 1, 'assets/images/news/news_18_1746506547.png', '2025-04-29 21:29:49', 'fixed_price', 3),
+(19, 'Rẻ vô địch', 'sdasd', 'ádasd', 1, 'assets/images/news/news_19_1746506556.png', '2025-04-30 17:20:49', 'fixed_price', 13);
 
 -- --------------------------------------------------------
 
@@ -304,15 +304,15 @@ CREATE TABLE `news_clicks` (
 
 INSERT INTO `news_clicks` (`click_id`, `news_id`, `click_count`, `last_clicked_at`) VALUES
 (1, 4, 16, '2025-05-06 03:39:29'),
-(2, 6, 27, '2025-05-06 04:48:53'),
-(3, 5, 2, '2025-05-06 03:39:34'),
-(4, 7, 3, '2025-05-04 17:04:56'),
-(5, 3, 9, '2025-05-06 03:39:25'),
-(6, 1, 11, '2025-05-06 04:49:53'),
-(7, 2, 18, '2025-05-06 04:49:52'),
-(8, 19, 4, '2025-05-04 17:18:08'),
-(9, 18, 3, '2025-04-30 10:46:59'),
-(10, 11, 2, '2025-05-03 16:50:14'),
+(2, 6, 28, '2025-05-06 09:19:11'),
+(3, 5, 5, '2025-05-06 09:45:35'),
+(4, 7, 4, '2025-05-06 10:31:49'),
+(5, 3, 10, '2025-05-06 10:17:20'),
+(6, 1, 18, '2025-05-06 10:18:37'),
+(7, 2, 24, '2025-05-06 10:17:13'),
+(8, 19, 5, '2025-05-06 09:41:51'),
+(9, 18, 5, '2025-05-06 09:41:49'),
+(10, 11, 3, '2025-05-06 10:15:36'),
 (11, 8, 1, '2025-05-06 03:39:39');
 
 -- --------------------------------------------------------
@@ -419,9 +419,6 @@ INSERT INTO `promotions` (`promotion_id`, `promotion_type`, `promotion_name`, `d
 (6, 'discount', 'Sale 90%', 90.00, NULL, '2025-04-09 17:35:00', '2025-05-08 17:35:00'),
 (7, 'discount', 'Sale 40%', 40.00, NULL, '2025-04-12 17:35:00', '2025-05-09 17:35:00'),
 (8, 'discount', 'Sale 30%', 30.00, NULL, '2025-04-19 17:35:00', '2025-05-09 17:35:00'),
-(10, 'discount', 'abc', 30.00, NULL, '2025-04-29 23:20:00', '2025-05-31 23:20:00'),
-(11, 'discount', 'bcv', 20.00, NULL, '2025-04-30 23:23:00', '2025-05-23 23:23:00'),
-(12, 'discount', '12', 20.00, NULL, '2025-05-04 23:42:00', '2025-05-06 23:42:00'),
 (13, 'fixed', '30$', NULL, 30.00, '2025-04-30 00:17:00', '2025-06-05 00:17:00');
 
 -- --------------------------------------------------------
@@ -440,18 +437,16 @@ CREATE TABLE `promotion_shoes` (
 --
 
 INSERT INTO `promotion_shoes` (`promotion_id`, `shoe_id`) VALUES
-(2, 1),
-(2, 2),
-(2, 3),
+(1, 1),
 (2, 4),
-(2, 5),
-(2, 6),
-(2, 7),
-(2, 8),
-(2, 9),
-(2, 10),
-(2, 11),
-(2, 12);
+(4, 5),
+(5, 3),
+(6, 6),
+(7, 7),
+(7, 8),
+(8, 9),
+(8, 10),
+(13, 11);
 
 -- --------------------------------------------------------
 
@@ -659,7 +654,7 @@ ALTER TABLE `promotions`
 -- AUTO_INCREMENT for table `shoes`
 --
 ALTER TABLE `shoes`
-  MODIFY `ShoesID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `ShoesID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- Constraints for dumped tables

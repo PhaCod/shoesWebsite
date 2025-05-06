@@ -19,6 +19,9 @@
 
     .actions {
         margin-bottom: 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
     }
 
     .pagination {
@@ -60,6 +63,26 @@
         color: red;
         font-weight: bold;
     }
+
+    .search-form input[type="text"], .sort-form select {
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        margin-right: 10px;
+    }
+
+    .search-form button, .sort-form button {
+        padding: 8px 16px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    .search-form button:hover, .sort-form button:hover {
+        background-color: #0056b3;
+    }
 </style>
 
 <div class="section-title">
@@ -83,6 +106,28 @@
 <div class="promotion-list">
     <div class="actions">
         <a href="index.php?controller=adminPromotion&action=create" class="btn">Create New Promotion</a>
+        <div>
+            <!-- Form tìm kiếm -->
+            <form class="search-form" method="GET" action="index.php" style="display: inline-block;">
+                <input type="hidden" name="controller" value="adminPromotion">
+                <input type="hidden" name="action" value="index">
+                <input type="hidden" name="page" value="<?php echo $page; ?>">
+                <input type="hidden" name="sort" value="<?php echo isset($_GET['sort']) ? htmlspecialchars($_GET['sort']) : 'ASC'; ?>">
+                <input type="text" name="keyword" placeholder="Search by name..." value="<?php echo isset($_GET['keyword']) ? htmlspecialchars($_GET['keyword']) : ''; ?>">
+                <button type="submit">Search</button>
+            </form>
+            <!-- Form sắp xếp -->
+            <form class="sort-form" method="GET" action="index.php" style="display: inline-block;">
+                <input type="hidden" name="controller" value="adminPromotion">
+                <input type="hidden" name="action" value="index">
+                <input type="hidden" name="page" value="<?php echo $page; ?>">
+                <input type="hidden" name="keyword" value="<?php echo isset($_GET['keyword']) ? htmlspecialchars($_GET['keyword']) : ''; ?>">
+                <select name="sort" onchange="this.form.submit()">
+                    <option value="ASC" <?php echo (isset($_GET['sort']) && $_GET['sort'] === 'ASC') ? 'selected' : ''; ?>>ID Ascending</option>
+                    <option value="DESC" <?php echo (isset($_GET['sort']) && $_GET['sort'] === 'DESC') ? 'selected' : ''; ?>>ID Descending</option>
+                </select>
+            </form>
+        </div>
     </div>
     <table>
         <thead>
@@ -138,15 +183,15 @@
     <div class="pagination">
         <?php if ($totalPages > 1): ?>
             <?php if ($page > 1): ?>
-                <a href="index.php?controller=adminPromotion&action=index&page=<?php echo $page - 1; ?>">Previous</a>
+                <a href="index.php?controller=adminPromotion&action=index&page=<?php echo $page - 1; ?>&keyword=<?php echo urlencode($keyword); ?>&sort=<?php echo $sort; ?>">Previous</a>
             <?php endif; ?>
 
             <?php for ($i = 1; $i <= $totalPages; $i++): ?>
-                <a href="index.php?controller=adminPromotion&action=index&page=<?php echo $i; ?>" <?php echo $i === $page ? 'class="active"' : ''; ?>><?php echo $i; ?></a>
+                <a href="index.php?controller=adminPromotion&action=index&page=<?php echo $i; ?>&keyword=<?php echo urlencode($keyword); ?>&sort=<?php echo $sort; ?>" <?php echo $i === $page ? 'class="active"' : ''; ?>><?php echo $i; ?></a>
             <?php endfor; ?>
 
             <?php if ($page < $totalPages): ?>
-                <a href="index.php?controller=adminPromotion&action=index&page=<?php echo $page + 1; ?>">Next</a>
+                <a href="index.php?controller=adminPromotion&action=index&page=<?php echo $page + 1; ?>&keyword=<?php echo urlencode($keyword); ?>&sort=<?php echo $sort; ?>">Next</a>
             <?php endif; ?>
         <?php endif; ?>
     </div>

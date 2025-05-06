@@ -1,29 +1,36 @@
 <?php
-require_once 'models/ProductModelv2.php';
+require_once __DIR__ . '/../models/ProductModelv2.php';
 
 class AdminProductController {
     private $productModel;
-    private $db;
 
     public function __construct() {
         $this->productModel = new ProductModel();
-        $database = new Database();
-        $this->db = $database->getConnection();
     }
 
     public function products() {
         if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
-            header('Location: index.php?controller=auth&action=login');
+            header('Location: /shoesWebsite/views/admin/index.php?controller=auth&action=login');
             exit;
         }
 
-        require_once 'views/admin/components/header.php';
-        require_once 'views/admin/pages/products.php';
+        $keyword = isset($_GET['keyword']) ? trim($_GET['keyword']) : '';
+        $category = isset($_GET['category']) ? trim($_GET['category']) : '';
+        $perPage = 8;
+        $currentPage = isset($_GET['page']) && is_numeric($_GET['page']) && $_GET['page'] > 0 ? (int)$_GET['page'] : 1;
+        $offset = ($currentPage - 1) * $perPage;
+
+        $products = $this->productModel->getProducts($keyword, $category, $perPage, $offset);
+        $totalProducts = $this->productModel->getTotalProducts($keyword, $category);
+        $totalPages = ceil($totalProducts / $perPage);
+
+        require_once __DIR__ . '/../views/admin/components/header.php';
+        require_once __DIR__ . '/../views/admin/pages/products.php';
     }
 
     public function addProduct() {
         if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
-            header('Location: index.php?controller=auth&action=login');
+            header('Location: /shoesWebsite/views/admin/index.php?controller=auth&action=login');
             exit;
         }
 
@@ -35,11 +42,10 @@ class AdminProductController {
             $categoryId = trim($_POST['category_id'] ?? '');
             $shoesSize = trim($_POST['shoes_size'] ?? '');
 
-            // Xử lý tải lên hình ảnh
             $image = null;
             if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
                 $allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
-                $maxFileSize = 5 * 1024 * 1024; // 5MB
+                $maxFileSize = 5 * 1024 * 1024;
                 $fileType = mime_content_type($_FILES['image']['tmp_name']);
                 $fileSize = $_FILES['image']['size'];
 
@@ -49,7 +55,10 @@ class AdminProductController {
                     $error = 'Kích thước hình ảnh không được vượt quá 5MB.';
                 } else {
                     $imageName = uniqid() . '-' . basename($_FILES['image']['name']);
-                    $uploadDir = 'assets/images/';
+                    $uploadDir = __DIR__ . '/../assets/images/shoes/';
+                    if (!is_dir($uploadDir)) {
+                        mkdir($uploadDir, 0755, true);
+                    }
                     $uploadPath = $uploadDir . $imageName;
 
                     if (move_uploaded_file($_FILES['image']['tmp_name'], $uploadPath)) {
@@ -66,8 +75,7 @@ class AdminProductController {
                 if (empty($name) || empty($price) || empty($stock) || empty($description) || empty($categoryId) || empty($shoesSize)) {
                     $error = 'Vui lòng nhập đầy đủ thông tin.';
                 } else {
-                    $stmt = $this->db->prepare("INSERT INTO shoes (Name, Price, Stock, Description, DateCreate, DateUpdate, CategoryID, shoes_size, Image) VALUES (?, ?, ?, ?, CURDATE(), CURDATE(), ?, ?, ?)");
-                    if ($stmt->execute([$name, $price, $stock, $description, $categoryId, $shoesSize, $image])) {
+                    if ($this->productModel->addProduct($name, $price, $stock, $description, $categoryId, $shoesSize, $image)) {
                         $success = 'Thêm sản phẩm thành công!';
                     } else {
                         $error = 'Thêm sản phẩm thất bại.';
@@ -76,20 +84,19 @@ class AdminProductController {
             }
         }
 
-        $categories = $this->db->query("SELECT * FROM category")->fetchAll(PDO::FETCH_ASSOC);
-
-        require_once 'views/admin/components/header.php';
-        require_once 'views/admin/pages/add-product.php';
+        $categories = $this->productModel->getCategories();
+        require_once __DIR__ . '/../views/admin/components/header.php';
+        require_once __DIR__ . '/../views/admin/pages/add-product.php';
     }
 
     public function editProduct() {
         if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
-            header('Location: index.php?controller=auth&action=login');
+            header('Location: /shoesWebsite/views/admin/index.php?controller=auth&action=login');
             exit;
         }
 
         if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
-            header('Location: index.php?controller=adminProduct&action=products');
+            header('Location: /shoesWebsite/views/admin/index.php?controller=adminProduct&action=products');
             exit;
         }
 
@@ -98,9 +105,8 @@ class AdminProductController {
 
         if (!$product) {
             $product_id = $id;
-            // Dữ liệu hardcode sẽ được xử lý trong edit-product.php
         } else {
-            $product_id = $product['ShoesID'];
+            $product_id = $product['id'];
         }
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -111,11 +117,10 @@ class AdminProductController {
             $categoryId = trim($_POST['category_id'] ?? '');
             $shoesSize = trim($_POST['shoes_size'] ?? '');
 
-            // Xử lý hình ảnh
-            $image = $product['Image'] ?? null;
+            $image = $product['image'] ?? null;
             if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
                 $allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
-                $maxFileSize = 5 * 1024 * 1024; // 5MB
+                $maxFileSize = 5 * 1024 * 1024;
                 $fileType = mime_content_type($_FILES['image']['tmp_name']);
                 $fileSize = $_FILES['image']['size'];
 
@@ -125,11 +130,13 @@ class AdminProductController {
                     $error = 'Kích thước hình ảnh không được vượt quá 5MB.';
                 } else {
                     $imageName = uniqid() . '-' . basename($_FILES['image']['name']);
-                    $uploadDir = 'assets/images/';
+                    $uploadDir = __DIR__ . '/../assets/images/'; // Sửa đường dẫn
+                    if (!is_dir($uploadDir)) {
+                        mkdir($uploadDir, 0755, true);
+                    }
                     $uploadPath = $uploadDir . $imageName;
 
                     if (move_uploaded_file($_FILES['image']['tmp_name'], $uploadPath)) {
-                        // Xóa hình ảnh cũ nếu có
                         if ($image && file_exists($uploadDir . $image)) {
                             unlink($uploadDir . $image);
                         }
@@ -144,8 +151,7 @@ class AdminProductController {
                 if (empty($name) || empty($price) || empty($stock) || empty($description) || empty($categoryId) || empty($shoesSize)) {
                     $error = 'Vui lòng nhập đầy đủ thông tin.';
                 } else {
-                    $stmt = $this->db->prepare("UPDATE shoes SET Name = ?, Price = ?, Stock = ?, Description = ?, DateUpdate = CURDATE(), CategoryID = ?, shoes_size = ?, Image = ? WHERE ShoesID = ?");
-                    if ($stmt->execute([$name, $price, $stock, $description, $categoryId, $shoesSize, $image, $id])) {
+                    if ($this->productModel->updateProduct($id, $name, $price, $stock, $description, $categoryId, $shoesSize, $image)) {
                         $success = 'Cập nhật sản phẩm thành công!';
                         $product = $this->productModel->getProductById($id);
                     } else {
@@ -155,20 +161,19 @@ class AdminProductController {
             }
         }
 
-        $categories = $this->db->query("SELECT * FROM category")->fetchAll(PDO::FETCH_ASSOC);
-
-        require_once 'views/admin/components/header.php';
-        require_once 'views/admin/pages/edit-product.php';
+        $categories = $this->productModel->getCategories();
+        require_once __DIR__ . '/../views/admin/components/header.php';
+        require_once __DIR__ . '/../views/admin/pages/edit-product.php';
     }
 
     public function deleteProduct() {
         if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
-            header('Location: index.php?controller=auth&action=login');
+            header('Location: /shoesWebsite/views/admin/index.php?controller=auth&action=login');
             exit;
         }
 
         if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
-            header('Location: index.php?controller=adminProduct&action=products');
+            header('Location: /shoesWebsite/views/admin/index.php?controller=adminProduct&action=products');
             exit;
         }
 
@@ -176,15 +181,13 @@ class AdminProductController {
         $product = $this->productModel->getProductById($id);
 
         if ($product) {
-            // Xóa hình ảnh nếu có
-            if ($product['Image'] && file_exists('assets/images/' . $product['Image'])) {
-                unlink('assets/images/' . $product['Image']);
+            if ($product['image'] && file_exists(__DIR__ . '/../assets/images/' . $product['image'])) { // Sửa đường dẫn
+                unlink(__DIR__ . '/../assets/images/' . $product['image']);
             }
-            $stmt = $this->db->prepare("DELETE FROM shoes WHERE ShoesID = ?");
-            $stmt->execute([$id]);
+            $this->productModel->deleteProduct($id);
         }
 
-        header('Location: index.php?controller=adminProduct&action=products');
+        header('Location: /shoesWebsite/views/admin/index.php?controller=adminProduct&action=products');
         exit;
     }
 }

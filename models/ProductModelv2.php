@@ -4,7 +4,7 @@ class ProductModel {
 
     public function __construct() {
         try {
-            $this->pdo = new PDO("mysql:host=127.0.0.1;dbname=shoes;charset=utf8mb4", "root", "");
+            $this->pdo = new PDO("mysql:host=127.0.0.1;dbname=shoe;charset=utf8mb4", "root", "");
             $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         } catch (PDOException $e) {
             die("Connection failed: " . $e->getMessage());
@@ -26,25 +26,27 @@ class ProductModel {
                 WHERE 1=1";
         $params = [];
     
-        // Add keyword search condition
         if (!empty($keyword)) {
             $sql .= " AND (s.Name LIKE ? OR s.Description LIKE ?)";
             $params[] = '%' . $keyword . '%';
             $params[] = '%' . $keyword . '%';
         }
     
-        // Add category filter condition
         if (!empty($category)) {
             $sql .= " AND c.Name = ?";
             $params[] = $category;
         }
     
-        // Add limit and offset directly
         $sql .= " LIMIT " . (int)$limit . " OFFSET " . (int)$offset;
     
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute($params);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        foreach ($products as &$product) {
+            $product['promotion'] = $this->getPromotionForProduct($product['id']);
+            $product['final_price'] = $this->calculateDiscountedPrice($product, $product['promotion']);
+        }
+        return $products;
     }
 
     public function getTotalProducts($keyword = '', $category = '') {
@@ -76,6 +78,67 @@ class ProductModel {
                                      JOIN category c ON s.CategoryID = c.CategoryID
                                      WHERE s.ShoesID = ?");
         $stmt->execute([$id]);
+        $product = $stmt->fetch(PDO::FETCH_ASSOC);
+        if ($product) {
+            $product['promotion'] = $this->getPromotionForProduct($id);
+            $product['final_price'] = $this->calculateDiscountedPrice($product, $product['promotion']);
+        }
+        return $product;
+    }
+
+    private function getPromotionForProduct($shoe_id) {
+        $current_date = date('Y-m-d H:i:s');
+        $query = "SELECT p.* 
+                  FROM promotions p 
+                  JOIN promotion_shoes ps ON p.promotion_id = ps.promotion_id 
+                  WHERE ps.shoe_id = :shoe_id 
+                  AND p.start_date <= :current_date 
+                  AND p.end_date >= :current_date 
+                  ORDER BY COALESCE(p.discount_percentage, 0) DESC, COALESCE(p.fixed_price, 999999) ASC 
+                  LIMIT 1";
+        $stmt = $this->pdo->prepare($query);
+        $stmt->bindValue(':shoe_id', (int)$shoe_id, PDO::PARAM_INT);
+        $stmt->bindValue(':current_date', $current_date, PDO::PARAM_STR);
+        $stmt->execute();
         return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    private function calculateDiscountedPrice($product, $promotion) {
+        if (!empty($promotion)) {
+            if ($promotion['discount_percentage']) {
+                return $product['price'] * (1 - $promotion['discount_percentage'] / 100);
+            } elseif ($promotion['fixed_price']) {
+                return $promotion['fixed_price'];
+            }
+        }
+        return $product['price'];
+    }
+
+    // Thêm sản phẩm mới
+    public function addProduct($name, $price, $stock, $description, $categoryId, $shoesSize, $image) {
+        $stmt = $this->pdo->prepare("INSERT INTO shoes (Name, Price, Stock, Description, DateCreate, DateUpdate, CategoryID, shoes_size, Image) 
+                                     VALUES (?, ?, ?, ?, CURDATE(), CURDATE(), ?, ?, ?)");
+        return $stmt->execute([$name, $price, $stock, $description, $categoryId, $shoesSize, $image]);
+    }
+
+    // Cập nhật sản phẩm
+    public function updateProduct($id, $name, $price, $stock, $description, $categoryId, $shoesSize, $image) {
+        $stmt = $this->pdo->prepare("UPDATE shoes 
+                                     SET Name = ?, Price = ?, Stock = ?, Description = ?, DateUpdate = CURDATE(), CategoryID = ?, shoes_size = ?, Image = ? 
+                                     WHERE ShoesID = ?");
+        return $stmt->execute([$name, $price, $stock, $description, $categoryId, $shoesSize, $image, $id]);
+    }
+
+    // Xóa sản phẩm
+    public function deleteProduct($id) {
+        $stmt = $this->pdo->prepare("DELETE FROM shoes WHERE ShoesID = ?");
+        return $stmt->execute([$id]);
+    }
+
+    // Lấy danh sách danh mục
+    public function getCategories() {
+        $stmt = $this->pdo->prepare("SELECT CategoryID AS id, Name AS name FROM category");
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }

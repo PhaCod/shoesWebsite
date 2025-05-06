@@ -2,83 +2,73 @@
     <h1>Đơn Hàng</h1>
 </div>
 
-<table class="admin-table">
+<table class="admin-table" style="width: 100%; border-collapse: collapse; margin-top: 20px;">
     <thead>
-        <tr>
-            <th>Mã Đơn Hàng</th>
-            <th>Khách Hàng</th>
-            <th>Ngày</th>
-            <th>Số Tiền</th>
-            <th>Trạng Thái</th>
-            <th>Hành Động</th>
+        <tr style="background-color: #f4f4f4; color: #333;">
+            <th style="padding: 10px; border: 1px solid #ddd; text-align: left;">Mã Đơn Hàng</th>
+            <th style="padding: 10px; border: 1px solid #ddd; text-align: left;">Khách Hàng</th>
+            <th style="padding: 10px; border: 1px solid #ddd; text-align: left;">Ngày</th>
+            <th style="padding: 10px; border: 1px solid #ddd; text-align: left;">Số Tiền</th>
+            <th style="padding: 10px; border: 1px solid #ddd; text-align: left;">Trạng Thái</th>
+            <th style="padding: 10px; border: 1px solid #ddd; text-align: left;">Hành Động</th>
         </tr>
     </thead>
     <tbody>
-        <tr>
-            <td>#1001</td>
-            <td>John Doe</td>
-            <td>Jun 12, 2023</td>
-            <td>$129.99</td>
-            <td><span class="status-delivered">Delivered</span></td>
-            <td><a href="/shoesWebsite/admin/index.php?controller=admin&action=orderDetail&id=1001" class="btn-view">Xem</a></td>
-        </tr>
-        <tr>
-            <td>#1002</td>
-            <td>Jane Smith</td>
-            <td>Jun 11, 2023</td>
-            <td>$89.99</td>
-            <td><span class="status-shipped">Shipped</span></td>
-            <td><a href="/shoesWebsite/admin/index.php?controller=admin&action=orderDetail&id=1002" class="btn-view">Xem</a></td>
-        </tr>
-        <tr>
-            <td>#1003</td>
-            <td>Robert Johnson</td>
-            <td>Jun 10, 2023</td>
-            <td>$199.99</td>
-            <td><span class="status-processing">Processing</span></td>
-            <td><a href="/shoesWebsite/admin/index.php?controller=admin&action=orderDetail&id=1003" class="btn-view">Xem</a></td>
-        </tr>
-        <tr>
-            <td>#1004</td>
-            <td>Emily Davis</td>
-            <td>Jun 9, 2023</td>
-            <td>$149.99</td>
-            <td><span class="status-delivered">Delivered</span></td>
-            <td><a href="/shoesWebsite/admin/index.php?controller=admin&action=orderDetail&id=1004" class="btn-view">Xem</a></td>
-        </tr>
-        <tr>
-            <td>#1005</td>
-            <td>Michael Wilson</td>
-            <td>Jun 8, 2023</td>
-            <td>$79.99</td>
-            <td><span class="status-cancelled">Cancelled</span></td>
-            <td><a href="/shoesWebsite/admin/index.php?controller=admin&action=orderDetail&id=1005" class="btn-view">Xem</a></td>
-        </tr>
-        <tr>
-            <td>#1006</td>
-            <td>Sarah Brown</td>
-            <td>Jun 7, 2023</td>
-            <td>$159.99</td>
-            <td><span class="status-shipped">Shipped</span></td>
-            <td><a href="/shoesWebsite/admin/index.php?controller=admin&action=orderDetail&id=1006" class="btn-view">Xem</a></td>
-        </tr>
-        <tr>
-            <td>#1007</td>
-            <td>David Lee</td>
-            <td>Jun 6, 2023</td>
-            <td>$109.99</td>
-            <td><span class="status-delivered">Delivered</span></td>
-            <td><a href="/shoesWebsite/admin/index.php?controller=admin&action=orderDetail&id=1007" class="btn-view">Xem</a></td>
-        </tr>
-        <tr>
-            <td>#1008</td>
-            <td>Lisa Taylor</td>
-            <td>Jun 5, 2023</td>
-            <td>$189.99</td>
-            <td><span class="status-delivered">Delivered</span></td>
-            <td><a href="/shoesWebsite/admin/index.php?controller=admin&action=orderDetail&id=1008" class="btn-view">Xem</a></td>
-        </tr>
+        <?php if (empty($orders)): ?>
+            <tr>
+                <td colspan="6" style="text-align: center; padding: 20px; border: 1px solid #ddd;">Không có đơn hàng nào.</td>
+            </tr>
+        <?php else: ?>
+            <?php foreach ($orders as $order): ?>
+                <tr style="border-bottom: 1px solid #ddd;">
+                    <td style="padding: 10px; border: 1px solid #ddd;">#<?php echo htmlspecialchars($order['OrderID']); ?></td>
+                    <td style="padding: 10px; border: 1px solid #ddd;"><?php echo htmlspecialchars($order['customer_name']); ?> (<?php echo htmlspecialchars($order['Email']); ?>)</td>
+                    <td style="padding: 10px; border: 1px solid #ddd;"><?php echo date('M d, Y', strtotime($order['Date'])); ?></td>
+                    <td style="padding: 10px; border: 1px solid #ddd;"><?php echo number_format($order['Total_price'], 2); ?> VND</td>
+                    <td style="padding: 10px; border: 1px solid #ddd;">
+                        <?php
+                        // Tùy chỉnh màu sắc cho từng trạng thái
+                        $statusStyles = [
+                            'Pending' => 'background-color: #ffeb3b; color: #333; padding: 5px 10px; border-radius: 12px; display: inline-block; font-size: 14px; font-weight: bold; border: 1px solid #d4c107;',
+                            'Processing' => 'background-color: #2196f3; color: white; padding: 5px 10px; border-radius: 12px; display: inline-block; font-size: 14px; font-weight: bold; border: 1px solid #1976d2;',
+                            'Shipped' => 'background-color: #ff9800; color: white; padding: 5px 10px; border-radius: 12px; display: inline-block; font-size: 14px; font-weight: bold; border: 1px solid #f57c00;',
+                            'Delivered' => 'background-color: #4caf50; color: white; padding: 5px 10px; border-radius: 12px; display: inline-block; font-size: 14px; font-weight: bold; border: 1px solid #388e3c;',
+                            'Cancelled' => 'background-color: #f44336; color: white; padding: 5px 10px; border-radius: 12px; display: inline-block; font-size: 14px; font-weight: bold; border: 1px solid #d32f2f;'
+                        ];
+                        $statusStyle = isset($statusStyles[$order['Status']]) ? $statusStyles[$order['Status']] : '';
+                        ?>
+                        <span style="<?php echo $statusStyle; ?>">
+                            <?php echo htmlspecialchars($order['Status']); ?>
+                        </span>
+                    </td>
+                    <td style="padding: 10px; border: 1px solid #ddd;">
+                        <a href="/shoesWebsite/views/admin/index.php?controller=adminOrder&action=orderDetail&id=<?php echo $order['OrderID']; ?>" 
+                           style="display: inline-block; padding: 6px 12px; background-color: #ff6b6b; color: white; text-decoration: none; border-radius: 5px; font-size: 14px; font-weight: bold; border: 1px solid #ff6b6b; transition: background-color 0.3s;"
+                           onmouseover="this.style.backgroundColor='#ff5252'"
+                           onmouseout="this.style.backgroundColor='#ff6b6b'">Xem</a>
+                        <select onchange="updateOrderStatus(<?php echo $order['OrderID']; ?>, this.value)"
+                                style="padding: 6px 10px; border-radius: 5px; border: 1px solid #ccc; font-size: 14px; margin-left: 10px; background-color: #fff; cursor: pointer; transition: border-color 0.3s;"
+                                onmouseover="this.style.borderColor='#2196f3'"
+                                onmouseout="this.style.borderColor='#ccc'">
+                            <option value="Pending" <?php echo $order['Status'] == 'Pending' ? 'selected' : ''; ?>>Pending</option>
+                            <option value="Processing" <?php echo $order['Status'] == 'Processing' ? 'selected' : ''; ?>>Processing</option>
+                            <option value="Shipped" <?php echo $order['Status'] == 'Shipped' ? 'selected' : ''; ?>>Shipped</option>
+                            <option value="Delivered" <?php echo $order['Status'] == 'Delivered' ? 'selected' : ''; ?>>Delivered</option>
+                            <option value="Cancelled" <?php echo $order['Status'] == 'Cancelled' ? 'selected' : ''; ?>>Cancelled</option>
+                        </select>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
+        <?php endif; ?>
     </tbody>
 </table>
 
-<?php require_once 'views/admin/components/admin_footer.php'; ?>
+<script>
+function updateOrderStatus(orderId, status) {
+    if (confirm('Bạn có chắc muốn cập nhật trạng thái đơn hàng này?')) {
+        window.location.href = '/shoesWebsite/views/admin/index.php?controller=adminOrder&action=updateOrderStatus&id=' + orderId + '&status=' + status;
+    }
+}
+</script>
+
+<?php require_once __DIR__ . '/../components/admin_footer.php'; ?>
