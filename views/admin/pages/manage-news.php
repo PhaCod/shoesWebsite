@@ -1,37 +1,163 @@
-
-<!-- <head>
-    
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/zuramai/mazer@docs/demo/assets/compiled/css/app.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/zuramai/mazer@docs/demo/assets/compiled/css/app-dark.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/zuramai/mazer@docs/demo/assets/compiled/css/iconly.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/2.3.0/css/dataTables.dataTables.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/2.3.0/css/dataTables.dataTables.rtl.css">
-    
-
-</head> -->
-
 <style>
-    .admin-actions1 {
-        margin-top: 5px;
+    .admin-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+    }
+
+    .admin-header h1 {
+        font-size: 24px;
+        font-weight: 600;
+        color: #333;
+    }
+
+    .admin-actions {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+    }
+
+    .btn {
+        padding: 10px 20px;
+        border-radius: 6px;
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 500;
+        transition: background-color 0.3s ease;
+    }
+
+    .btn-primary {
+        background-color: #007bff;
+        color: white;
+        border: none;
+    }
+
+    .btn-primary:hover {
+        background-color: #0056b3;
+    }
+
+    .btn-secondary {
+        background-color: #6c757d;
+        color: white;
+        border: none;
+    }
+
+    .btn-secondary:hover {
+        background-color: #5a6268;
+    }
+
+    .btn-danger {
+        background-color: #dc3545;
+        color: white;
+        border: none;
+    }
+
+    .btn-danger:hover {
+        background-color: #c82333;
+    }
+
+    .search-form {
+        display: flex;
+        gap: 15px;
+        margin-bottom: 30px;
+        align-items: center;
+    }
+
+    .search-form input[type="text"],
+    .search-form select {
+        padding: 10px;
+        border: 2px solid #e0e0e0;
+        border-radius: 6px;
+        font-size: 14px;
+        width: 200px;
+        transition: border-color 0.3s ease;
+    }
+
+    .search-form input[type="text"]:focus,
+    .search-form select:focus {
+        border-color: #007bff;
+        outline: none;
+        box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+    }
+
+    .search-form button {
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 500;
+        transition: background-color 0.3s ease;
+    }
+
+    .search-form button:hover {
+        background-color: #0056b3;
+    }
+
+    .admin-table {
+        width: 100%;
+        border-collapse: collapse;
+        background-color: #ffffff;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    .admin-table th,
+    .admin-table td {
+        padding: 15px;
+        text-align: left;
+        border-bottom: 1px solid #e0e0e0;
+    }
+
+    .admin-table th {
+        background-color: #f8f9fa;
+        font-weight: 600;
+        color: #333;
+    }
+
+    .admin-table tbody tr:hover {
+        background-color: #f1f3f5;
     }
 
     .admin-table img {
         max-width: 50px;
         border-radius: 5px;
+        object-fit: cover;
+    }
+
+    .admin-table .action-buttons {
+        display: flex;
+        gap: 10px;
+    }
+
+    .admin-table .action-buttons a {
+        padding: 8px 15px;
+        font-size: 13px;
+        border-radius: 5px;
+        text-align: center;
+        min-width: 70px;
     }
 
     .pagination {
-        margin-top: 20px;
+        margin-top: 30px;
         text-align: center;
+        display: flex;
+        justify-content: center;
+        gap: 8px;
     }
 
     .pagination a {
-        display: inline-block;
-        padding: 8px 16px;
-        margin: 0 4px;
+        padding: 10px 15px;
         border: 1px solid #ddd;
+        border-radius: 5px;
         text-decoration: none;
         color: #333;
+        font-size: 14px;
+        transition: background-color 0.3s ease;
     }
 
     .pagination a.active {
@@ -41,57 +167,59 @@
     }
 
     .pagination a:hover:not(.active) {
-        background-color: #f1f1f1;
+        background-color: #e9ecef;
     }
 
     .status-pending {
-        color: orange;
-        font-weight: bold;
+        color: #ff8c00;
+        font-weight: 500;
     }
 
     .status-active {
-        color: green;
-        font-weight: bold;
+        color: #28a745;
+        font-weight: 500;
     }
 
     .status-expired {
-        color: red;
-        font-weight: bold;
+        color: #dc3545;
+        font-weight: 500;
     }
 
-    .search-form {
-        display: flex;
-        gap: 10px;
+    .alert {
+        padding: 15px;
         margin-bottom: 20px;
+        border-radius: 6px;
+        text-align: center;
     }
 
-    .search-form select {
-        padding: 5px;
-        border-radius: 4px;
-        border: 1px solid #ddd;
+    .alert-success {
+        background-color: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
     }
 
-    
+    .alert-danger {
+        background-color: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+    }
 </style>
 
 <div class="admin-header">
     <h1>Quản Lý Tin Tức</h1>
-    <a href="/shoesWebsite/index.php?controller=adminNews&action=stats" class="btn btn-secondary">Thống kê truy cập</a>
+    <a href="/shoesWebsite/index.php?controller=adminNews&action=stats" class="btn btn-secondary">Thống Kê Truy Cập</a>
 </div>
 
 <?php if (isset($error)): ?>
-    <div class="alert alert-danger"><?php echo $error; ?></div>
+    <div class="alert alert-danger"><?php echo htmlspecialchars($error); ?></div>
 <?php endif; ?>
 <?php if (isset($success)): ?>
-    <div class="alert alert-success"><?php echo $success; ?></div>
+    <div class="alert alert-success"><?php echo htmlspecialchars($success); ?></div>
 <?php endif; ?>
 
 <div class="admin-actions">
     <a href="/shoesWebsite/index.php?controller=adminNews&action=addNews" class="btn btn-primary">Thêm Bài Viết Mới</a>
-</div>
-
-<div class="admin-actions1">
-    <a href="/shoesWebsite/index.php?controller=adminPromotion&action=index" class="btn btn-primary">Chỉnh sửa khuyến mãi</a>
+    <a href="/shoesWebsite/index.php?controller=adminPromotion&action=index" class="btn btn-primary">Chỉnh Sửa Khuyến Mãi</a>
 </div>
 
 <form method="get" class="search-form">
@@ -99,7 +227,7 @@
     <input type="hidden" name="action" value="manage">
     <input type="text" name="search" placeholder="Tìm kiếm bài viết..." value="<?php echo htmlspecialchars($search); ?>">
     <select name="status">
-        <option value="all" <?php echo $status === 'all' ? 'selected' : ''; ?>>Tất cả</option>
+        <option value="all" <?php echo $status === 'all' ? 'selected' : ''; ?>>Tất Cả</option>
         <option value="pending" <?php echo $status === 'pending' ? 'selected' : ''; ?>>Pending</option>
         <option value="active" <?php echo $status === 'active' ? 'selected' : ''; ?>>Active</option>
         <option value="expired" <?php echo $status === 'expired' ? 'selected' : ''; ?>>Expired</option>
@@ -107,7 +235,7 @@
     <button type="submit">Tìm Kiếm</button>
 </form>
 
-<table class="table table-striped admin-table">
+<table class="table admin-table">
     <thead>
         <tr>
             <th>Thumbnail</th>
@@ -120,7 +248,6 @@
             <th>Status</th>
             <th>Hành Động</th>
         </tr>
-        
     </thead>
     <tbody>
         <?php if (empty($news)): ?>
@@ -143,7 +270,7 @@
                         <?php
                         $news_types = [
                             'general' => 'Tin Tức Thông Thường',
-                            'flash_sale' => 'Sale sập sàn',
+                            'flash_sale' => 'Sale Sập Sàn',
                             'fixed_price' => 'Rẻ Vô Địch',
                         ];
                         echo $news_types[$item['news_type']] ?? 'Không xác định';
@@ -171,8 +298,10 @@
                         ?>
                     </td>
                     <td>
-                        <a href="/shoesWebsite/index.php?controller=adminNews&action=editNews&id=<?php echo $item['NewsID']; ?>" class="btn btn-primary">Sửa</a>
-                        <a href="/shoesWebsite/index.php?controller=adminNews&action=deleteNews&id=<?php echo $item['NewsID']; ?>" class="btn btn-danger" onclick="return confirm('Bạn có chắc muốn xóa bài viết này?')">Xóa</a>
+                        <div class="action-buttons">
+                            <a href="/shoesWebsite/index.php?controller=adminNews&action=editNews&id=<?php echo $item['NewsID']; ?>" class="btn btn-primary">Sửa</a>
+                            <a href="/shoesWebsite/index.php?controller=adminNews&action=deleteNews&id=<?php echo $item['NewsID']; ?>" class="btn btn-danger" onclick="return confirm('Bạn có chắc muốn xóa bài viết này?')">Xóa</a>
+                        </div>
                     </td>
                 </tr>
             <?php endforeach; ?>
@@ -183,15 +312,15 @@
 <div class="pagination">
     <?php if ($totalPages > 1): ?>
         <?php if ($page > 1): ?>
-            <a href="/shoesWebsite/index.php?controller=adminNews&action=manage&search=<?php echo urlencode($search); ?>&status=<?php echo urlencode($status); ?>&page=<?php echo $page - 1; ?>" class="btn btn-secondary">Trang trước</a>
+            <a href="/shoesWebsite/index.php?controller=adminNews&action=manage&search=<?php echo urlencode($search); ?>&status=<?php echo urlencode($status); ?>&page=<?php echo $page - 1; ?>">Trang Trước</a>
         <?php endif; ?>
 
         <?php for ($i = 1; $i <= $totalPages; $i++): ?>
-            <a href="/shoesWebsite/index.php?controller=adminNews&action=manage&search=<?php echo urlencode($search); ?>&status=<?php echo urlencode($status); ?>&page=<?php echo $i; ?>" class="btn btn-secondary <?php echo $i === $page ? 'active' : ''; ?>"><?php echo $i; ?></a>
+            <a href="/shoesWebsite/index.php?controller=adminNews&action=manage&search=<?php echo urlencode($search); ?>&status=<?php echo urlencode($status); ?>&page=<?php echo $i; ?>" class="<?php echo $i === $page ? 'active' : ''; ?>"><?php echo $i; ?></a>
         <?php endfor; ?>
 
         <?php if ($page < $totalPages): ?>
-            <a href="/shoesWebsite/index.php?controller=adminNews&action=manage&search=<?php echo urlencode($search); ?>&status=<?php echo urlencode($status); ?>&page=<?php echo $page + 1; ?>" class="btn btn-secondary">Trang sau</a>
+            <a href="/shoesWebsite/index.php?controller=adminNews&action=manage&search=<?php echo urlencode($search); ?>&status=<?php echo urlencode($status); ?>&page=<?php echo $page + 1; ?>">Trang Sau</a>
         <?php endif; ?>
     <?php endif; ?>
 </div>
