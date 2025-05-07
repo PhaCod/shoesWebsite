@@ -26,7 +26,9 @@
                         <?php endif; ?>
                     </a></li>
                     <?php if (isset($_SESSION['user_id'])): ?>
-                        <li><a href="/shoesWebsite/index.php?controller=account&action=index">My Account</a></li>
+                        <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'member'): ?>
+                            <li><a href="/shoesWebsite/index.php?controller=account&action=index">My Account</a></li>
+                        <?php endif; ?>
                         <li><a href="/shoesWebsite/index.php?controller=auth&action=logout">Logout</a></li>
                     <?php else: ?>
                         <li><a href="/shoesWebsite/index.php?controller=auth&action=login">Login</a></li>
