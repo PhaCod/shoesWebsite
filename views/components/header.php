@@ -28,6 +28,8 @@
                     <?php if (isset($_SESSION['user_id'])): ?>
                         <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'member'): ?>
                             <li><a href="/shoesWebsite/index.php?controller=account&action=index">My Account</a></li>
+                        <?php elseif (isset($_SESSION['role']) && $_SESSION['role'] === 'admin'): ?>
+                            <li><a href="/shoesWebsite/index.php?controller=admin&action=dashboard">Dashboard</a></li>
                         <?php endif; ?>
                         <li><a href="/shoesWebsite/index.php?controller=auth&action=logout">Logout</a></li>
                     <?php else: ?>
