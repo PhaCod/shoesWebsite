@@ -4,7 +4,7 @@ class OrderModel {
 
     public function __construct() {
         try {
-            $this->pdo = new PDO("mysql:host=127.0.0.1;dbname=shoes;charset=utf8mb4", "root", "");
+            $this->pdo = new PDO("mysql:host=127.0.0.1;dbname=shoe;charset=utf8mb4", "root", "123456789");
             $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         } catch (PDOException $e) {
             die("Connection failed: " . $e->getMessage());
@@ -55,5 +55,27 @@ class OrderModel {
 
         $stmt = $this->pdo->prepare("UPDATE `order` SET Status = ? WHERE OrderID = ?");
         return $stmt->execute([$status, $orderId]);
+    }
+
+    // Thêm đơn hàng mới
+    public function addOrder($memberId, $totalPrice, $quantity) {
+        try {
+            $stmt = $this->pdo->prepare("INSERT INTO `order` (MemberID, Total_price, Quantity, Date, Status) 
+                                         VALUES (?, ?, ?, NOW(), 'Pending')");
+            $stmt->execute([$memberId, $totalPrice, $quantity]);
+            return $this->pdo->lastInsertId(); // Trả về OrderID
+        } catch (PDOException $e) {
+            return false;
+        }
+    }
+
+    // Thêm chi tiết đơn hàng vào bảng order_shoes
+    public function addOrderShoes($orderId, $shoesId) {
+        try {
+            $stmt = $this->pdo->prepare("INSERT INTO order_shoes (OrderID, ShoesID) VALUES (?, ?)");
+            return $stmt->execute([$orderId, $shoesId]);
+        } catch (PDOException $e) {
+            return false;
+        }
     }
 }

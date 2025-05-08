@@ -4,13 +4,22 @@ class ProductModel {
 
     public function __construct() {
         try {
-            $this->pdo = new PDO("mysql:host=127.0.0.1;dbname=shoes;charset=utf8mb4", "root", "");
+            $this->pdo = new PDO("mysql:host=127.0.0.1;dbname=shoe;charset=utf8mb4", "root", "123456789");
             $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         } catch (PDOException $e) {
             die("Connection failed: " . $e->getMessage());
         }
     }
-
+    public function getRandomProducts($limit) {
+        try {
+            $stmt = $this->pdo->prepare("SELECT ProductID, ProductName, Price, Image FROM `product` ORDER BY RAND() LIMIT :limit");
+            $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            return [];
+        }
+    }
     public function getAllProducts() {
         $stmt = $this->pdo->prepare("SELECT s.ShoesID AS id, s.Name AS name, s.Price AS price, s.Image AS image, s.Description AS description, c.Name AS category
                                      FROM shoes s

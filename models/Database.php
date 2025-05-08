@@ -3,7 +3,7 @@ class Database {
     private $host = 'localhost';
     private $db_name = 'shoe';
     private $username = 'root';
-    private $password = '';
+    private $password = '123456789';
     private $pdo;
 
     public function __construct() {

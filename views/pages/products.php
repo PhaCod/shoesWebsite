@@ -4,7 +4,6 @@
     <h2>All Products</h2>
 </div>
 
-<!-- Form tìm kiếm với CSS inline -->
 <div class="search-form" style="margin: 20px 0; text-align: left;">
     <form action="/shoesWebsite/index.php?controller=products&action=index" method="get" style="display: inline-block;">
         <input type="hidden" name="controller" value="products">
@@ -46,7 +45,6 @@
     }
     ?>
 
-    <!-- Phân trang với CSS inline -->
     <?php if (!empty($products) && $totalPages > 1): ?>
         <div class="pagination" style="margin: 20px 0; text-align: center;">
             <?php

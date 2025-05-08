@@ -1,6 +1,6 @@
 <?php
 $host = '127.0.0.1';
-$dbname = 'shoes';
+$dbname = 'shoe';
 $username = 'root'; // Thay đổi nếu bạn sử dụng tài khoản khác
 $password = '123456789'; // Mật khẩu MySQL của bạn, mặc định là rỗng trên localhost
 
