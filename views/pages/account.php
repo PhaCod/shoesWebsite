@@ -6,39 +6,39 @@
 
 <style>
     .account-form {
-        max-width: 600px; /* Tăng chiều rộng để trông thoáng hơn */
-        margin: 40px auto; /* Thêm khoảng cách từ đầu trang */
+        max-width: 600px;
+        margin: 40px auto;
         padding: 30px;
-        background-color: #ffffff; /* Màu nền sáng hơn */
-        border-radius: 12px; /* Bo góc lớn hơn */
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* Hiệu ứng bóng mềm mại */
+        background-color: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
     }
 
     .account-form .form-group {
-        margin-bottom: 20px; /* Tăng khoảng cách giữa các nhóm */
+        margin-bottom: 20px;
     }
 
     .account-form label {
         display: block;
-        font-weight: 500; /* Font đậm vừa phải */
-        color: #333; /* Màu chữ đậm hơn */
-        margin-bottom: 8px; /* Khoảng cách nhỏ hơn giữa label và input */
+        font-weight: 500;
+        color: #333;
+        margin-bottom: 8px;
     }
 
     .account-form input {
         width: 100%;
-        padding: 12px; /* Tăng padding để dễ nhập */
-        border: 2px solid #e0e0e0; /* Viền dày hơn và màu nhẹ */
-        border-radius: 6px; /* Bo góc nhẹ */
+        padding: 12px;
+        border: 2px solid #e0e0e0;
+        border-radius: 6px;
         box-sizing: border-box;
-        font-size: 16px; /* Kích thước chữ trong input */
-        transition: border-color 0.3s ease; /* Hiệu ứng chuyển đổi màu viền */
+        font-size: 16px;
+        transition: border-color 0.3s ease;
     }
 
     .account-form input:focus {
-        border-color: #007bff; /* Màu viền khi focus */
-        outline: none; /* Loại bỏ outline mặc định */
-        box-shadow: 0 0 5px rgba(0, 123, 255, 0.3); /* Hiệu ứng glow */
+        border-color: #007bff;
+        outline: none;
+        box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
     }
 
     .account-form button {
@@ -51,11 +51,11 @@
         cursor: pointer;
         font-size: 16px;
         font-weight: 500;
-        transition: background-color 0.3s ease; /* Hiệu ứng chuyển đổi màu nền */
+        transition: background-color 0.3s ease;
     }
 
     .account-form button:hover {
-        background-color: #0056b3; /* Màu nền khi hover */
+        background-color: #0056b3;
     }
 
     .alert {
@@ -76,6 +76,19 @@
         color: #721c24;
         border: 1px solid #f5c6cb;
     }
+
+    .password-section {
+        margin-top: 40px;
+        border-top: 1px solid #e0e0e0;
+        padding-top: 20px;
+    }
+
+    .password-section h3 {
+        font-size: 18px;
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 20px;
+    }
 </style>
 
 <div class="account-form">
@@ -93,6 +106,7 @@
         </div>
     <?php endif; ?>
 
+    <!-- Form cập nhật thông tin -->
     <form method="post" action="">
         <div class="form-group">
             <label for="username">Username (cannot be changed)</label>
@@ -114,8 +128,31 @@
             <input type="text" id="phone" name="phone" value="<?php echo htmlspecialchars($user['Phone'] ?? ''); ?>" required>
         </div>
 
-        <button type="submit">Update Information</button>
+        <button type="submit" name="update_info">Update Information</button>
     </form>
+
+    <!-- Form đổi mật khẩu -->
+    <div class="password-section">
+        <h3>Change Password</h3>
+        <form method="post" action="">
+            <div class="form-group">
+                <label for="current_password">Current Password</label>
+                <input type="password" id="current_password" name="current_password" required>
+            </div>
+
+            <div class="form-group">
+                <label for="new_password">New Password</label>
+                <input type="password" id="new_password" name="new_password" required>
+            </div>
+
+            <div class="form-group">
+                <label for="confirm_password">Confirm New Password</label>
+                <input type="password" id="confirm_password" name="confirm_password" required>
+            </div>
+
+            <button type="submit" name="change_password">Change Password</button>
+        </form>
+    </div>
 </div>
 
 <?php require_once 'views/components/footer.php'; ?>
