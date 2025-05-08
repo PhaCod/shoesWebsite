@@ -1,7 +1,8 @@
 <?php require_once 'views/components/header.php'; ?>
 
-<div class="section-title">
-    <h2>All Products</h2>
+<div class="section-title" style="text-align: center; margin: 40px 0;">
+    <h2 style="font-size: 32px; color: #333; position: relative; display: inline-block; padding-bottom: 10px;">All Products</h2>
+   
 </div>
 
 <div class="search-form" style="margin: 20px 0; text-align: left;">
@@ -18,27 +19,27 @@
     </form>
 </div>
 
-<div class="products">
+<div class="products" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; padding: 20px; justify-items: center;">
     <?php
     $category = isset($_GET['category']) ? $_GET['category'] : '';
     $keyword = isset($_GET['keyword']) ? $_GET['keyword'] : '';
     if (empty($products)) {
-        echo '<p>No products found.</p>';
+        echo '<p style="text-align: center; color: #777;">No products found.</p>';
     } else {
         foreach ($products as $product) {
-            echo '<div class="product-card">';
-            echo '<div class="product-img">';
+            echo '<div class="product-card" style="background-color: white; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); width: 100%; max-width: 250px; height: 400px; display: flex; flex-direction: column; justify-content: space-between; align-items: center; padding: 15px;">';
+            echo '<div class="product-img" style="height: 200px; width: 100%; overflow: hidden; display: flex; justify-content: center; align-items: center;">';
             $imageUrl = !empty($product['image']) && filter_var($product['image'], FILTER_VALIDATE_URL) ? htmlspecialchars($product['image']) : '/shoesWebsite/public/placeholder.jpg';
-            echo '<img src="' . $imageUrl . '" alt="' . htmlspecialchars($product['name']) . '" loading="lazy">';
+            echo '<img src="' . $imageUrl . '" alt="' . htmlspecialchars($product['name']) . '" loading="lazy" style="max-height: 100%; max-width: 100%; object-fit: contain;">';
             echo '</div>';
-            echo '<div class="product-info">';
-            echo '<h3>' . htmlspecialchars($product['name']) . '</h3>';
+            echo '<div class="product-info" style="text-align: center; width: 100%; padding: 10px 0;">';
+            echo '<h3 style="font-size: 18px; margin-bottom: 10px; color: #333;">' . htmlspecialchars($product['name']) . '</h3>';
             if (isset($product['final_price']) && $product['final_price'] != $product['price']) {
-                echo '<div class="price"><s>$' . number_format($product['price'], 2) . '</s><br>$' . number_format($product['final_price'], 2) . '</div>';
+                echo '<div class="price" style="color: #ff6b6b; font-weight: bold; margin-bottom: 10px;"><s>$' . number_format($product['price'], 2) . '</s><br>$' . number_format($product['final_price'], 2) . '</div>';
             } else {
-                echo '<div class="price">$' . number_format($product['price'], 2) . '</div>';
+                echo '<div class="price" style="color: #ff6b6b; font-weight: bold; margin-bottom: 10px;">$' . number_format($product['price'], 2) . '</div>';
             }
-            echo '<a href="/shoesWebsite/index.php?controller=products&action=detail&id=' . $product['id'] . '" class="btn">View Details</a>';
+            echo '<a href="/shoesWebsite/index.php?controller=products&action=detail&id=' . $product['id'] . '" class="btn" style="display: inline-block; background-color: #ff6b6b; color: white; padding: 10px 20px; border: none; border-radius: 4px; text-decoration: none; font-size: 16px; transition: all 0.3s ease;" onmouseover="this.style.backgroundColor=\'#ff5252\'" onmouseout="this.style.backgroundColor=\'#ff6b6b\'">View Details</a>';
             echo '</div>';
             echo '</div>';
         }
