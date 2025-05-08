@@ -33,7 +33,7 @@ class AccountController {
         }
 
         // Xử lý cập nhật thông tin
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_info'])) {
             $name = isset($_POST['name']) ? trim($_POST['name']) : '';
             $email = isset($_POST['email']) ? trim($_POST['email']) : '';
             $phone = isset($_POST['phone']) ? trim($_POST['phone']) : '';
@@ -58,6 +58,36 @@ class AccountController {
                     }
                 } catch (Exception $e) {
                     $_SESSION['error'] = "Error updating information: " . $e->getMessage();
+                }
+            }
+        }
+
+        // Xử lý đổi mật khẩu
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['change_password'])) {
+            $currentPassword = isset($_POST['current_password']) ? trim($_POST['current_password']) : '';
+            $newPassword = isset($_POST['new_password']) ? trim($_POST['new_password']) : '';
+            $confirmPassword = isset($_POST['confirm_password']) ? trim($_POST['confirm_password']) : '';
+
+            // Kiểm tra dữ liệu đầu vào
+            if (empty($currentPassword) || empty($newPassword) || empty($confirmPassword)) {
+                $_SESSION['error'] = "All password fields are required.";
+            } elseif ($this->userModel->checkPassword($userId, $currentPassword) === false) {
+                $_SESSION['error'] = "Current password is incorrect.";
+            } elseif ($newPassword !== $confirmPassword) {
+                $_SESSION['error'] = "New password and confirmation do not match.";
+            } elseif (strlen($newPassword) < 6) {
+                $_SESSION['error'] = "New password must be at least 6 characters long.";
+            } else {
+                // Cập nhật mật khẩu mới
+                try {
+                    $updated = $this->userModel->updatePassword($userId, $newPassword);
+                    if ($updated) {
+                        $_SESSION['message'] = "Your password has been updated successfully.";
+                    } else {
+                        $_SESSION['error'] = "Failed to update your password.";
+                    }
+                } catch (Exception $e) {
+                    $_SESSION['error'] = "Error updating password: " . $e->getMessage();
                 }
             }
         }

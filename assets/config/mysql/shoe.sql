@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 06, 2025 at 12:48 PM
+-- Generation Time: May 08, 2025 at 02:26 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -304,16 +304,17 @@ CREATE TABLE `news_clicks` (
 
 INSERT INTO `news_clicks` (`click_id`, `news_id`, `click_count`, `last_clicked_at`) VALUES
 (1, 4, 16, '2025-05-06 03:39:29'),
-(2, 6, 28, '2025-05-06 09:19:11'),
-(3, 5, 5, '2025-05-06 09:45:35'),
-(4, 7, 4, '2025-05-06 10:31:49'),
-(5, 3, 10, '2025-05-06 10:17:20'),
-(6, 1, 18, '2025-05-06 10:18:37'),
-(7, 2, 24, '2025-05-06 10:17:13'),
-(8, 19, 5, '2025-05-06 09:41:51'),
-(9, 18, 5, '2025-05-06 09:41:49'),
-(10, 11, 3, '2025-05-06 10:15:36'),
-(11, 8, 1, '2025-05-06 03:39:39');
+(2, 6, 29, '2025-05-07 07:49:48'),
+(3, 5, 6, '2025-05-07 07:49:49'),
+(4, 7, 5, '2025-05-06 11:30:18'),
+(5, 3, 11, '2025-05-06 11:34:43'),
+(6, 1, 26, '2025-05-07 07:50:49'),
+(7, 2, 28, '2025-05-07 07:47:39'),
+(8, 19, 7, '2025-05-06 11:35:35'),
+(9, 18, 7, '2025-05-06 11:35:37'),
+(10, 11, 4, '2025-05-06 14:50:11'),
+(11, 8, 3, '2025-05-07 07:49:51'),
+(12, 9, 1, '2025-05-06 11:35:32');
 
 -- --------------------------------------------------------
 
@@ -439,6 +440,7 @@ CREATE TABLE `promotion_shoes` (
 INSERT INTO `promotion_shoes` (`promotion_id`, `shoe_id`) VALUES
 (1, 1),
 (2, 4),
+(3, 2),
 (4, 5),
 (5, 3),
 (6, 6),
@@ -472,7 +474,7 @@ CREATE TABLE `shoes` (
 --
 
 INSERT INTO `shoes` (`ShoesID`, `Name`, `Price`, `Stock`, `Description`, `DateCreate`, `DateUpdate`, `Image`, `CategoryID`, `shoes_size`) VALUES
-(1, 'Nike Air Max', 25000.00, 100, 'Giày chạy bộ cao cấp', '2025-01-01', '2025-03-01', 'https://sneakerdaily.vn/wp-content/uploads/2024/01/Giay-Nike-Air-Max-1-White-Black-FD9082-107-1.jpg', 1, 38.00),
+(1, 'Nike Air Max', 2500.00, 100, 'Giày chạy bộ cao cấp', '2025-01-01', '2025-05-07', 'https://sneakerdaily.vn/wp-content/uploads/2024/01/Giay-Nike-Air-Max-1-White-Black-FD9082-107-1.jpg', 1, 38.00),
 (2, 'Dr. Martens', 3000000.00, 50, 'Giày boot thời trang', '2025-02-01', '2025-03-15', 'https://images-na.ssl-images-amazon.com/images/I/71LL6yCVP4L.jpg', 2, 39.00),
 (3, 'Nike Air Zoom', 120.00, 50, 'Giày chạy bộ cao cấp', '2024-01-01', '2024-03-01', 'https://supersports.com.vn/cdn/shop/files/FD2722-002-2_1024x1024.jpg?v=1726656415', 1, 40.00),
 (4, 'Adidas Ultraboost', 150.00, 30, 'Giày thể thao Adidas', '2024-02-01', '2024-04-01', 'https://product.hstatic.net/1000361048/product/giay_ultraboost_light_djen_gy9351_01_standard_f5f5bedd68df46a9bc78d9dcdccb49f8_master.jpg', 1, 41.00),
@@ -577,7 +579,7 @@ ALTER TABLE `promotions`
 --
 ALTER TABLE `promotion_shoes`
   ADD PRIMARY KEY (`promotion_id`,`shoe_id`),
-  ADD KEY `shoe_id` (`shoe_id`);
+  ADD KEY `promotion_shoes_ibfk_2` (`shoe_id`);
 
 --
 -- Indexes for table `shoes`
@@ -636,7 +638,7 @@ ALTER TABLE `news`
 -- AUTO_INCREMENT for table `news_clicks`
 --
 ALTER TABLE `news_clicks`
-  MODIFY `click_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `click_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT for table `order`
@@ -654,7 +656,7 @@ ALTER TABLE `promotions`
 -- AUTO_INCREMENT for table `shoes`
 --
 ALTER TABLE `shoes`
-  MODIFY `ShoesID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `ShoesID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- Constraints for dumped tables
@@ -723,7 +725,7 @@ ALTER TABLE `order_shoes`
 --
 ALTER TABLE `promotion_shoes`
   ADD CONSTRAINT `promotion_shoes_ibfk_1` FOREIGN KEY (`promotion_id`) REFERENCES `promotions` (`promotion_id`),
-  ADD CONSTRAINT `promotion_shoes_ibfk_2` FOREIGN KEY (`shoe_id`) REFERENCES `shoes` (`ShoesID`);
+  ADD CONSTRAINT `promotion_shoes_ibfk_2` FOREIGN KEY (`shoe_id`) REFERENCES `shoes` (`ShoesID`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `shoes`
