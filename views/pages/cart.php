@@ -26,7 +26,6 @@
                     <tr>
                         <td>
                             <div class="cart-product">
-                                <img src="/shoesWebsite/<?php echo htmlspecialchars($item['product']['image']); ?>" alt="<?php echo htmlspecialchars($item['product']['name']); ?>">
                                 <div>
                                     <h4><?php echo htmlspecialchars($item['product']['name']); ?></h4>
                                 </div>
